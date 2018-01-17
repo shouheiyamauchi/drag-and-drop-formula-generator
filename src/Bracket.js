@@ -41,7 +41,7 @@ const bracketTarget = {
 		}
 
 		// determine whether item is on left or right side
-		const hoverElementProperties = document.getElementById('rule-builder-id-' + props.id).getBoundingClientRect()
+		const hoverElementProperties = document.getElementById('rule-builder-id-' + hoverId).getBoundingClientRect()
 		const centerOfElement = (hoverElementProperties.x + hoverElementProperties.width / 2)
 		const mouseHorizontalPosition = monitor.getClientOffset().x
 
@@ -53,15 +53,17 @@ const bracketTarget = {
 			leftOrRight = "right"
 		}
 
-		switch(monitor.getItemType()) {
-			case 'logicElement':
-			case 'bracket':
-				props.moveLogicElement(dragId, hoverId, leftOrRight, ItemTypes.BRACKET)
-				break;
-			case 'templateItem': // drag in items from the templates
-				props.addAndDragItem(dragItem, hoverId, leftOrRight, ItemTypes.BRACKET)
-				break;
-		}
+    props.moveElement(props, monitor, ItemTypes.LOGIC_ELEMENT)
+
+		// switch(monitor.getItemType()) {
+		// 	case 'logicElement':
+		// 	case 'bracket':
+		// 		props.moveLogicElement(props, monitor, ItemTypes.BRACKET)
+		// 		break;
+		// 	case 'templateItem': // drag in items from the templates
+		// 		props.addAndDragItem(props, monitor, ItemTypes.BRACKET)
+		// 		break;
+		// }
 	}
 }
 
@@ -79,10 +81,10 @@ class Bracket extends Component {
 			connectDragSource,
 			connectDropTarget,
       draggingId,
+      moveElement,
       updateDragging,
 			logicElements,
 			moveLogicElement,
-      moveBracket,
 			addAndDragItem,
 		} = this.props
 
@@ -96,9 +98,9 @@ class Bracket extends Component {
 						value={card.value}
 						type={card.type}
             draggingId={draggingId}
+            moveElement={moveElement}
             updateDragging={updateDragging}
 						moveLogicElement={moveLogicElement}
-            moveBracket={moveBracket}
 						addAndDragItem={addAndDragItem}
 					/>
 				))}

@@ -34,7 +34,7 @@ const logicElementTarget = {
 		}
 
 		// determine whether item is on left or right side
-		const hoverElementProperties = document.getElementById('rule-builder-id-' + props.id).getBoundingClientRect()
+		const hoverElementProperties = document.getElementById('rule-builder-id-' + hoverId).getBoundingClientRect()
 		const centerOfElement = (hoverElementProperties.x + hoverElementProperties.width / 2)
 		const mouseHorizontalPosition = monitor.getClientOffset().x
 
@@ -46,15 +46,17 @@ const logicElementTarget = {
 			leftOrRight = "right"
 		}
 
-		switch(monitor.getItemType()) {
-			case 'logicElement':
-			case 'bracket':
-				props.moveLogicElement(dragId, hoverId, leftOrRight, ItemTypes.LOGIC_ELEMENT)
-				break;
-			case 'templateItem': // drag in items from the templates
-				props.addAndDragItem(dragItem, hoverId, leftOrRight, ItemTypes.LOGIC_ELEMENT)
-				break;
-		}
+		props.moveElement(props, monitor, ItemTypes.LOGIC_ELEMENT)
+
+		// switch(monitor.getItemType()) {
+		// 	case 'logicElement':
+		// 	case 'bracket':
+		// 		props.moveLogicElement(props, monitor, ItemTypes.LOGIC_ELEMENT)
+		// 		break;
+		// 	case 'templateItem': // drag in items from the templates
+		// 		props.addAndDragItem(props, monitor, ItemTypes.LOGIC_ELEMENT)
+		// 		break;
+		// }
 
 	},
 }
@@ -83,9 +85,9 @@ class LogicElement extends Component {
 			value,
 			type,
 			draggingId,
+			moveElement,
 			updateDragging,
 			moveLogicElement,
-			moveBracket,
 			addAndDragItem,
 		} = props
 		const opacity = id === draggingId ? 0.5 : 1
@@ -95,7 +97,7 @@ class LogicElement extends Component {
 		} else if (type === 'bracket') {
 			return (
 				<div>
-					<Bracket id={id} logicElements={value} draggingId={draggingId} updateDragging={updateDragging} moveLogicElement={moveLogicElement} moveBracket={moveBracket} addAndDragItem={addAndDragItem} />
+					<Bracket id={id} logicElements={value} draggingId={draggingId} updateDragging={updateDragging} moveElement={moveElement} moveLogicElement={moveLogicElement} addAndDragItem={addAndDragItem} />
 				</div>
 
 			)

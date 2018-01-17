@@ -3,6 +3,7 @@ import update from 'immutability-helper';
 import { DragDropContext } from 'react-dnd';
 import ItemTypes from './ItemTypes'
 import HTML5Backend from 'react-dnd-html5-backend';
+// import { default as TouchBackend } from 'react-dnd-touch-backend';
 import TemplateItem from './TemplateItem'
 import LogicElement from './LogicElement'
 
@@ -10,6 +11,7 @@ const style = {
   display: 'flex',
   flexDirection: 'row',
   flexWrap: 'wrap',
+  alignItems: 'center'
 }
 
 class Container extends Component {
@@ -131,7 +133,43 @@ class Container extends Component {
     this.setState({draggingId: id});
   }
 
-  moveLogicElement(dragId, hoverId, leftOrRight, dropTargetType) {
+  moveElement = (props, monitor, dropTargetType) => {
+    const draggingItemType = monitor.getItemType()
+
+    const functionList = {
+      logicElement: this.moveLogicElement,
+      bracket: this.moveLogicElement,
+      templateItem: this.addAndDragItem
+    }
+
+    functionList[draggingItemType](props, monitor, dropTargetType)
+  }
+
+  moveLogicElement(props, monitor, dropTargetType) {
+    const dragItem = monitor.getItem()
+		const dragId = monitor.getItem().id
+
+		const hoverItem = props
+		const hoverId = props.id
+
+		// don't replace items with themselves
+		if (dragId === hoverId) {
+			return
+		}
+
+
+    const hoverElementProperties = document.getElementById('rule-builder-id-' + hoverId).getBoundingClientRect()
+    const centerOfElement = (hoverElementProperties.x + hoverElementProperties.width / 2)
+    const mouseHorizontalPosition = monitor.getClientOffset().x
+
+    let leftOrRight = ''
+
+    if (mouseHorizontalPosition < centerOfElement) {
+      leftOrRight = 'left'
+    } else if (mouseHorizontalPosition > centerOfElement) {
+      leftOrRight = "right"
+    }
+
     // prevent function from executing if same as last drag
     if (this.state.lastDrag.dragId === dragId && this.state.lastDrag.hoverId === hoverId && this.state.lastDrag.leftOrRight === leftOrRight) return
 
@@ -198,20 +236,42 @@ class Container extends Component {
     return this.getParentArrayAndIndex(hoverId, dragArray) !== undefined
   }
 
-  addAndDragItem(dragItem, hoverId, leftOrRight, dropTargetType) {
-    const dragId = dragItem.id
+  addAndDragItem(props, monitor, dropTargetType) {
+    const dragItem = monitor.getItem()
+    const dragId = monitor.getItem().id
+
+    const hoverItem = props
+    const hoverId = props.id
+console.log(hoverId)
+    // don't replace items with themselves
+    if (dragId === hoverId) {
+      return
+    }
+
+    // determine whether item is on left or right side
+    const hoverElementProperties = document.getElementById('rule-builder-id-' + hoverId).getBoundingClientRect()
+    const centerOfElement = (hoverElementProperties.x + hoverElementProperties.width / 2)
+    const mouseHorizontalPosition = monitor.getClientOffset().x
+
+    let leftOrRight = ''
+
+    if (mouseHorizontalPosition < centerOfElement) {
+      leftOrRight = 'left'
+    } else if (mouseHorizontalPosition > centerOfElement) {
+      leftOrRight = "right"
+    }
 
     // prevent function from executing if same as last drag
     if (this.state.lastDrag.dragId === dragId && this.state.lastDrag.hoverId === hoverId && this.state.lastDrag.leftOrRight === leftOrRight) return
 
-    
+
     console.log("addAndDragItem")
     const { newId, logicElements, templateItems } = this.state;
 
 
     // redirect to move function if item has already been added to array
     if (dragId < newId) {
-      this.moveLogicElement(dragId, hoverId, leftOrRight, dropTargetType)
+      this.moveLogicElement(props, monitor, dropTargetType)
       return
     }
 
@@ -269,10 +329,10 @@ class Container extends Component {
               id={card.id}
               type={card.type}
               value={card.value}
+              moveElement={this.moveElement}
               draggingId={this.state.draggingId}
               updateDragging={this.updateDragging}
               moveLogicElement={this.moveLogicElement}
-              moveBracket={this.moveBracket}
               addAndDragItem={this.addAndDragItem}
             />
           ))}
@@ -283,3 +343,4 @@ class Container extends Component {
 }
 
 export default DragDropContext(HTML5Backend)(Container);
+// export default DragDropContext(TouchBackend)(Container);
