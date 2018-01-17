@@ -29,7 +29,7 @@ class Container extends Component {
       lastDrag: {
         dragId: '',
         hoverId: '',
-        leftOrRight: ''
+        leftOrRightOverHoverItem: ''
       },
       templateItems: [
         {
@@ -137,7 +137,7 @@ class Container extends Component {
     const centerOfElement = (hoverElementProperties.x + hoverElementProperties.width / 2)
     const mouseHorizontalPosition = monitor.getClientOffset().x
 
-    let leftOrRight = ''
+    let leftOrRightOverHoverItem = ''
 
     if (mouseHorizontalPosition < centerOfElement) {
       return 'left'
@@ -158,10 +158,10 @@ class Container extends Component {
       return
     }
 
-    const leftOrRight = this.mousePositionOverHoverItem(hoverId, monitor)
+    const leftOrRightOverHoverItem = this.mousePositionOverHoverItem(hoverId, monitor)
 
     // prevent function from executing if same as last drag
-    if (this.state.lastDrag.dragId === dragId && this.state.lastDrag.hoverId === hoverId && this.state.lastDrag.leftOrRight === leftOrRight) return
+    if (this.state.lastDrag.dragId === dragId && this.state.lastDrag.hoverId === hoverId && this.state.lastDrag.leftOrRightOverHoverItem === leftOrRightOverHoverItem) return
 
     const draggingItemType = monitor.getItemType()
 
@@ -171,10 +171,10 @@ class Container extends Component {
       templateItem: this.addAndDragItem
     }
 
-    functionList[draggingItemType](hoverItem, dragItem, dropTargetType, leftOrRight)
+    functionList[draggingItemType](hoverItem, dragItem, dropTargetType, leftOrRightOverHoverItem)
   }
 
-  moveLogicElement(hoverItem, dragItem, dropTargetType, leftOrRight) {
+  moveLogicElement(hoverItem, dragItem, dropTargetType, leftOrRightOverHoverItem) {
     const hoverId = hoverItem.id
     const dragId = dragItem.id
 
@@ -196,17 +196,17 @@ class Container extends Component {
     let insertIndex = null
 
     if (dropTargetType === ItemTypes.LOGIC_ELEMENT) {
-      insertIndex = leftOrRight === 'left' ? parentAndIndexOfHovering.index : parentAndIndexOfHovering.index + 1
+      insertIndex = leftOrRightOverHoverItem === 'left' ? parentAndIndexOfHovering.index : parentAndIndexOfHovering.index + 1
       parentAndIndexOfHovering.parentArray.splice(insertIndex, 0, draggingObject)
     } else if (dropTargetType === ItemTypes.BRACKET) {
-      insertIndex = leftOrRight === 'left' ? 0 : hoveringObject.value.length
+      insertIndex = leftOrRightOverHoverItem === 'left' ? 0 : hoveringObject.value.length
       hoveringObject.value.splice(insertIndex, 0, draggingObject)
     }
 
     const lastDrag = {
       dragId,
       hoverId,
-      leftOrRight
+      leftOrRightOverHoverItem
     }
 
     this.setState({
@@ -215,7 +215,7 @@ class Container extends Component {
     })
   }
 
-  addAndDragItem(hoverItem, dragItem, dropTargetType, leftOrRight) {
+  addAndDragItem(hoverItem, dragItem, dropTargetType, leftOrRightOverHoverItem) {
     const hoverId = hoverItem.id
     const dragId = dragItem.id
     const dragIndex = dragItem.index
@@ -226,7 +226,7 @@ class Container extends Component {
 
     // redirect to move function if item has already been added to array
     if (dragId < newId) {
-      this.moveLogicElement(hoverItem, dragItem, dropTargetType, leftOrRight)
+      this.moveLogicElement(hoverItem, dragItem, dropTargetType, leftOrRightOverHoverItem)
       return
     }
 
@@ -242,17 +242,17 @@ class Container extends Component {
     let insertIndex = null
 
     if (dropTargetType === ItemTypes.LOGIC_ELEMENT) {
-      insertIndex = leftOrRight === 'left' ? parentAndIndexOfHovering.index : parentAndIndexOfHovering.index + 1
+      insertIndex = leftOrRightOverHoverItem === 'left' ? parentAndIndexOfHovering.index : parentAndIndexOfHovering.index + 1
       parentAndIndexOfHovering.parentArray.splice(insertIndex, 0, newObject)
     } else if (dropTargetType === ItemTypes.BRACKET) {
-      insertIndex = leftOrRight === 'left' ? 0 : hoveringObject.value.length
+      insertIndex = leftOrRightOverHoverItem === 'left' ? 0 : hoveringObject.value.length
       hoveringObject.value.splice(insertIndex, 0, newObject)
     }
 
     const lastDrag = {
       dragId,
       hoverId,
-      leftOrRight
+      leftOrRightOverHoverItem
     }
 
     this.setState({
