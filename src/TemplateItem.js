@@ -1,16 +1,13 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import { findDOMNode } from 'react-dom'
-import { DragSource, DropTarget } from 'react-dnd'
+import { DragSource } from 'react-dnd'
 import ItemTypes from './ItemTypes'
-import flow from 'lodash/flow';
 
 const style = {
 	border: '1px solid black',
 	padding: '0.5rem 1rem',
 	marginBottom: '.5rem',
-	backgroundColor: 'white',
-	cursor: 'move',
+	backgroundColor: 'white'
 }
 
 const templateItem = {

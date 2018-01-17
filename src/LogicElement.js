@@ -1,6 +1,5 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import { findDOMNode } from 'react-dom'
 import flow from 'lodash/flow';
 import { DragSource, DropTarget } from 'react-dnd'
 import ItemTypes from './ItemTypes'
@@ -20,6 +19,7 @@ const logicElementSource = {
 
 const logicElementTarget = {
 	hover(props, monitor, component) {
+    // prevent executing on parent containers
 		if (!monitor.isOver({ shallow: true })) return
 
 		props.moveElement(props, monitor, ItemTypes.LOGIC_ELEMENT)

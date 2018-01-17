@@ -133,30 +133,18 @@ class Container extends Component {
   }
 
   moveElement = (props, monitor, dropTargetType) => {
-    const draggingItemType = monitor.getItemType()
+    const dragItem = monitor.getItem()
+    const dragId = monitor.getItem().id
 
-    const functionList = {
-      logicElement: this.moveLogicElement,
-      bracket: this.moveLogicElement,
-      templateItem: this.addAndDragItem
+    const hoverItem = props
+    const hoverId = props.id
+
+    // don't replace items with themselves
+    if (dragId === hoverId) {
+      return
     }
 
-    functionList[draggingItemType](props, monitor, dropTargetType)
-  }
-
-  moveLogicElement(props, monitor, dropTargetType) {
-    const dragItem = monitor.getItem()
-		const dragId = monitor.getItem().id
-
-		const hoverItem = props
-		const hoverId = props.id
-
-		// don't replace items with themselves
-		if (dragId === hoverId) {
-			return
-		}
-
-
+    // determine whether item is on left or right side
     const hoverElementProperties = document.getElementById('rule-builder-id-' + hoverId).getBoundingClientRect()
     const centerOfElement = (hoverElementProperties.x + hoverElementProperties.width / 2)
     const mouseHorizontalPosition = monitor.getClientOffset().x
@@ -171,6 +159,21 @@ class Container extends Component {
 
     // prevent function from executing if same as last drag
     if (this.state.lastDrag.dragId === dragId && this.state.lastDrag.hoverId === hoverId && this.state.lastDrag.leftOrRight === leftOrRight) return
+
+    const draggingItemType = monitor.getItemType()
+
+    const functionList = {
+      logicElement: this.moveLogicElement,
+      bracket: this.moveLogicElement,
+      templateItem: this.addAndDragItem
+    }
+
+    functionList[draggingItemType](hoverItem, dragItem, dropTargetType, leftOrRight)
+  }
+
+  moveLogicElement(hoverItem, dragItem, dropTargetType, leftOrRight) {
+    const hoverId = hoverItem.id
+    const dragId = dragItem.id
 
     // cancel if a dragging element is hovering over its own child
     if (this.getSingleElement(dragId).type === 'bracket' && this.hoverIsChildOfDrag(dragId, hoverId, logicElements)) return
@@ -209,60 +212,10 @@ class Container extends Component {
     })
   }
 
-  getParentArrayAndIndex(logicElementId, array) {
-    for (let i = 0; i < array.length; i++) {
-      if (array[i].id === logicElementId) {
-        return {parentArray: array, index: i}
-      }
-      if (array[i].value.constructor === Array) {
-        const nestedArray = this.getParentArrayAndIndex(logicElementId, array[i].value)
-        if (nestedArray) {
-          return nestedArray
-        }
-      }
-    }
-  }
-
-  getSingleElement(logicElementId) {
-    const logicElementProperties = this.getParentArrayAndIndex(logicElementId, this.state.logicElements);
-
-    return logicElementProperties.parentArray[logicElementProperties.index]
-  }
-
-  hoverIsChildOfDrag(dragId, hoverId, array) {
-    const dragArray = this.getSingleElement(dragId).value
-
-    return this.getParentArrayAndIndex(hoverId, dragArray) !== undefined
-  }
-
-  addAndDragItem(props, monitor, dropTargetType) {
-    const dragItem = monitor.getItem()
-    const dragId = monitor.getItem().id
-
-    const hoverItem = props
-    const hoverId = props.id
-console.log(hoverId)
-    // don't replace items with themselves
-    if (dragId === hoverId) {
-      return
-    }
-
-    // determine whether item is on left or right side
-    const hoverElementProperties = document.getElementById('rule-builder-id-' + hoverId).getBoundingClientRect()
-    const centerOfElement = (hoverElementProperties.x + hoverElementProperties.width / 2)
-    const mouseHorizontalPosition = monitor.getClientOffset().x
-
-    let leftOrRight = ''
-
-    if (mouseHorizontalPosition < centerOfElement) {
-      leftOrRight = 'left'
-    } else if (mouseHorizontalPosition > centerOfElement) {
-      leftOrRight = "right"
-    }
-
-    // prevent function from executing if same as last drag
-    if (this.state.lastDrag.dragId === dragId && this.state.lastDrag.hoverId === hoverId && this.state.lastDrag.leftOrRight === leftOrRight) return
-
+  addAndDragItem(hoverItem, dragItem, dropTargetType, leftOrRight) {
+    const hoverId = hoverItem.id
+    const dragId = dragItem.id
+    const dragIndex = dragItem.index
 
     console.log("addAndDragItem")
     const { newId, logicElements, templateItems } = this.state;
@@ -270,14 +223,14 @@ console.log(hoverId)
 
     // redirect to move function if item has already been added to array
     if (dragId < newId) {
-      this.moveLogicElement(props, monitor, dropTargetType)
+      this.moveLogicElement(hoverItem, dragItem, dropTargetType, leftOrRight)
       return
     }
 
     const newObject = {
       id: newId,
       type: 'operator',
-      value: templateItems[dragItem.index].value
+      value: templateItems[dragIndex].value
     }
 
     const parentAndIndexOfHovering = this.getParentArrayAndIndex(hoverId, logicElements)
@@ -304,6 +257,32 @@ console.log(hoverId)
       lastDrag,
       newId: this.state.newId + 1
     })
+  }
+
+  getParentArrayAndIndex(logicElementId, array) {
+    for (let i = 0; i < array.length; i++) {
+      if (array[i].id === logicElementId) {
+        return {parentArray: array, index: i}
+      }
+      if (array[i].value.constructor === Array) {
+        const nestedArray = this.getParentArrayAndIndex(logicElementId, array[i].value)
+        if (nestedArray) {
+          return nestedArray
+        }
+      }
+    }
+  }
+
+  getSingleElement(logicElementId) {
+    const logicElementProperties = this.getParentArrayAndIndex(logicElementId, this.state.logicElements);
+
+    return logicElementProperties.parentArray[logicElementProperties.index]
+  }
+
+  hoverIsChildOfDrag(dragId, hoverId, array) {
+    const dragArray = this.getSingleElement(dragId).value
+
+    return this.getParentArrayAndIndex(hoverId, dragArray) !== undefined
   }
 
   render() {

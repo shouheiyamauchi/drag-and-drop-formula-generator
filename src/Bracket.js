@@ -1,6 +1,5 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import { findDOMNode } from 'react-dom'
 import { DragSource, DropTarget } from 'react-dnd'
 import ItemTypes from './ItemTypes'
 import LogicElement from './LogicElement'
@@ -27,9 +26,10 @@ const bracketSource = {
 
 const bracketTarget = {
   hover(props, monitor, component) {
+    // prevent executing on parent containers
 		if (!monitor.isOver({ shallow: true })) return
 
-    props.moveElement(props, monitor, ItemTypes.LOGIC_ELEMENT)
+    props.moveElement(props, monitor, ItemTypes.BRACKET)
 	}
 }
 
