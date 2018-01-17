@@ -30,9 +30,15 @@ class LogicElement extends Component {
 	static propTypes = {
 		connectDragSource: PropTypes.func.isRequired,
 		connectDropTarget: PropTypes.func.isRequired,
-		isDragging: PropTypes.bool.isRequired,
-		id: PropTypes.any.isRequired,
-		value: PropTypes.any.isRequired
+		draggingId: PropTypes.number,
+    updateDragging: PropTypes.func.isRequired,
+		id: PropTypes.number.isRequired,
+		value: PropTypes.oneOfType([
+			PropTypes.string,
+			PropTypes.array
+		]).isRequired,
+		type: PropTypes.string.isRequired,
+		moveElement: PropTypes.func.isRequired
 	}
 
 	renderObject = props => {
@@ -45,13 +51,14 @@ class LogicElement extends Component {
 		}
 
 		const {
+			draggingId,
+			updateDragging,
 			id,
 			value,
 			type,
-			draggingId,
-			moveElement,
-			updateDragging
+			moveElement
 		} = props
+
 		const opacity = id === draggingId ? 0.5 : 1
 
 		if (type === 'number' || type === 'operator') {
@@ -62,9 +69,9 @@ class LogicElement extends Component {
 					<Bracket
 						id={id}
 						logicElements={value}
+						moveElement={moveElement}
 						draggingId={draggingId}
 						updateDragging={updateDragging}
-						moveElement={moveElement}
 					/>
 				</div>
 
@@ -75,21 +82,22 @@ class LogicElement extends Component {
 	render() {
 		const {
 			connectDragSource,
-			connectDropTarget,
+			connectDropTarget
 		} = this.props
 
 		return connectDragSource(
-			connectDropTarget(this.renderObject(this.props)),
+			connectDropTarget(
+				this.renderObject(this.props)
+			)
 		)
 	}
 }
 
 export default flow(
   DragSource(ItemTypes.LOGIC_ELEMENT, logicElementSource, (connect, monitor) => ({
-  	connectDragSource: connect.dragSource(),
-  	isDragging: monitor.isDragging(),
+  	connectDragSource: connect.dragSource()
   })),
   DropTarget([ItemTypes.BRACKET, ItemTypes.TEMPLATE_ITEM, ItemTypes.LOGIC_ELEMENT], logicElementTarget, connect => ({
-  	connectDropTarget: connect.dropTarget(),
+  	connectDropTarget: connect.dropTarget()
   }))
 )(LogicElement)

@@ -16,12 +16,6 @@ const style = {
 class Container extends Component {
   constructor(props) {
     super(props);
-    this.updateDragging = this.updateDragging.bind(this);
-    this.addAndDragItem = this.addAndDragItem.bind(this);
-    this.moveLogicElement = this.moveLogicElement.bind(this);
-    this.getParentArrayAndIndex = this.getParentArrayAndIndex.bind(this);
-    this.getSingleElement = this.getSingleElement.bind(this);
-    this.hoverIsChildOfDrag = this.hoverIsChildOfDrag.bind(this);
 
     this.state = {
       draggingId: null,
@@ -128,7 +122,7 @@ class Container extends Component {
     }
   }
 
-  updateDragging(id) {
+  updateDragging = id => {
     this.setState({draggingId: id});
   }
 
@@ -136,8 +130,6 @@ class Container extends Component {
     const hoverElementProperties = document.getElementById('rule-builder-id-' + hoverId).getBoundingClientRect()
     const centerOfElement = (hoverElementProperties.x + hoverElementProperties.width / 2)
     const mouseHorizontalPosition = monitor.getClientOffset().x
-
-    let leftOrRightOverHoverItem = ''
 
     if (mouseHorizontalPosition < centerOfElement) {
       return 'left'
@@ -174,7 +166,8 @@ class Container extends Component {
     functionList[draggingItemType](hoverItem, dragItem, dropTargetType, leftOrRightOverHoverItem)
   }
 
-  moveLogicElement(hoverItem, dragItem, dropTargetType, leftOrRightOverHoverItem) {
+  moveLogicElement = (hoverItem, dragItem, dropTargetType, leftOrRightOverHoverItem) => {
+    const { logicElements } = this.state;
     const hoverId = hoverItem.id
     const dragId = dragItem.id
 
@@ -182,7 +175,6 @@ class Container extends Component {
     if (this.getSingleElement(dragId).type === 'bracket' && this.hoverIsChildOfDrag(dragId, hoverId, logicElements)) return
 
     console.log("moveLogicElement")
-    const { logicElements } = this.state;
 
     const parentAndIndexOfDragging = this.getParentArrayAndIndex(dragId, logicElements)
     // clone the parent array to prevent mutating original object
@@ -215,13 +207,13 @@ class Container extends Component {
     })
   }
 
-  addAndDragItem(hoverItem, dragItem, dropTargetType, leftOrRightOverHoverItem) {
+  addAndDragItem = (hoverItem, dragItem, dropTargetType, leftOrRightOverHoverItem) => {
+    const { newId, logicElements, templateItems } = this.state;
     const hoverId = hoverItem.id
     const dragId = dragItem.id
     const dragIndex = dragItem.index
 
     console.log("addAndDragItem")
-    const { newId, logicElements, templateItems } = this.state;
 
 
     // redirect to move function if item has already been added to array
@@ -262,7 +254,7 @@ class Container extends Component {
     })
   }
 
-  getParentArrayAndIndex(logicElementId, array) {
+  getParentArrayAndIndex = (logicElementId, array) => {
     for (let i = 0; i < array.length; i++) {
       if (array[i].id === logicElementId) {
         return {parentArray: array, index: i}
@@ -276,13 +268,13 @@ class Container extends Component {
     }
   }
 
-  getSingleElement(logicElementId) {
+  getSingleElement = (logicElementId) => {
     const logicElementProperties = this.getParentArrayAndIndex(logicElementId, this.state.logicElements);
 
     return logicElementProperties.parentArray[logicElementProperties.index]
   }
 
-  hoverIsChildOfDrag(dragId, hoverId, array) {
+  hoverIsChildOfDrag = (dragId, hoverId, array) => {
     const dragArray = this.getSingleElement(dragId).value
 
     return this.getParentArrayAndIndex(hoverId, dragArray) !== undefined
@@ -296,10 +288,11 @@ class Container extends Component {
         <div style={style}>
           {templateItems.map((templateItem, i) => (
             <TemplateItem
-              key={i}
               index={i}
-              value={templateItem.value}
+              key={i}
               newId={newId}
+              value={templateItem.value}
+              updateDragging={this.updateDragging}
             />
           ))}
         </div>

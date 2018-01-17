@@ -12,22 +12,28 @@ const style = {
 
 const templateItem = {
 	beginDrag(props) {
+		props.updateDragging(props.newId)
 		return {
 			id: props.newId,
 			index: props.index
 		}
 	},
+	endDrag(props) {
+		props.updateDragging(null)
+	}
 }
 
 class TemplateItem extends Component {
 	static propTypes = {
 		connectDragSource: PropTypes.func.isRequired,
+    updateDragging: PropTypes.func.isRequired,
+		index: PropTypes.number.isRequired,
+		newId: PropTypes.number.isRequired,
 		value: PropTypes.string.isRequired,
 	}
 
 	render() {
 		const {
-			id,
 			value,
 			connectDragSource,
 		} = this.props
@@ -39,5 +45,5 @@ class TemplateItem extends Component {
 }
 
 export default DragSource(ItemTypes.TEMPLATE_ITEM, templateItem, (connect, monitor) => ({
-	connectDragSource: connect.dragSource(),
+	connectDragSource: connect.dragSource()
 }))(TemplateItem)
