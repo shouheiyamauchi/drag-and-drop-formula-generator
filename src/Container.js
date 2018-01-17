@@ -127,7 +127,6 @@ class Container extends Component {
   }
 
   moveLogicElement(dragId, hoverId, leftOrRight, dropTargetType) {
-    // console.log(dragId, hoverId)
     const { logicElements } = this.state;
 
     // cancel if a dragging element is hovering over its own child

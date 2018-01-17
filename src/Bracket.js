@@ -62,47 +62,7 @@ const bracketTarget = {
 				props.addAndDragItem(dragItem, hoverId, leftOrRight, ItemTypes.BRACKET)
 				break;
 		}
-
 	}
-
-	// hover(props, monitor, component) {
-	// 	if (!monitor.isOver({ shallow: true })) return
-  //
-	// 	// const dragItem = monitor.getItem()
-	// 	// const dragId = monitor.getItem().id
-  //   //
-	// 	// const hoverItem = props
-	// 	// const hoverId = props.id
-  //
-	// 	// don't replace items with themselves
-	// 	// if (dragId === hoverId) {
-	// 	// 	return
-	// 	// }
-  //
-	// 	// determine whether item is on left or right side
-	// 	// const hoverElementProperties = document.getElementById('rule-builder-id-' + props.id).getBoundingClientRect()
-	// 	// const centerOfElement = (hoverElementProperties.x + hoverElementProperties.width / 2)
-	// 	// const mouseHorizontalPosition = monitor.getClientOffset().x
-  //   //
-	// 	// let leftOrRight = ''
-  //   //
-	// 	// if (mouseHorizontalPosition < centerOfElement) {
-	// 	// 	leftOrRight = 'left'
-	// 	// } else if (mouseHorizontalPosition > centerOfElement) {
-	// 	// 	leftOrRight = "right"
-	// 	// }
-  //
-	// 	// switch(monitor.getItemType()) {
-	// 	// 	case 'logicElement':
-	// 	// 	case 'bracket':
-	// 	// 		props.moveLogicElement(dragId, hoverId, leftOrRight)
-	// 	// 		break;
-	// 	// 	case 'templateItem': // drag in items from the templates
-	// 	// 		// props.addAndDragItem(dragItem, hoverIndex, leftOrRight)
-	// 	// 		break;
-	// 	// }
-  //
-	// },
 }
 
 class Bracket extends Component {
