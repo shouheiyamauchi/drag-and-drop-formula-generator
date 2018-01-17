@@ -132,19 +132,7 @@ class Container extends Component {
     this.setState({draggingId: id});
   }
 
-  moveElement = (props, monitor, dropTargetType) => {
-    const dragItem = monitor.getItem()
-    const dragId = monitor.getItem().id
-
-    const hoverItem = props
-    const hoverId = props.id
-
-    // don't replace items with themselves
-    if (dragId === hoverId) {
-      return
-    }
-
-    // determine whether item is on left or right side
+  mousePositionOverHoverItem = (hoverId, monitor) => {
     const hoverElementProperties = document.getElementById('rule-builder-id-' + hoverId).getBoundingClientRect()
     const centerOfElement = (hoverElementProperties.x + hoverElementProperties.width / 2)
     const mouseHorizontalPosition = monitor.getClientOffset().x
@@ -152,10 +140,25 @@ class Container extends Component {
     let leftOrRight = ''
 
     if (mouseHorizontalPosition < centerOfElement) {
-      leftOrRight = 'left'
+      return 'left'
     } else if (mouseHorizontalPosition > centerOfElement) {
-      leftOrRight = "right"
+      return "right"
     }
+  }
+
+  moveElement = (props, monitor, dropTargetType) => {
+    const dragItem = monitor.getItem()
+    const dragId = dragItem.id
+
+    const hoverItem = props
+    const hoverId = hoverItem.id
+
+    // don't replace items with themselves
+    if (dragId === hoverId) {
+      return
+    }
+
+    const leftOrRight = this.mousePositionOverHoverItem(hoverId, monitor)
 
     // prevent function from executing if same as last drag
     if (this.state.lastDrag.dragId === dragId && this.state.lastDrag.hoverId === hoverId && this.state.lastDrag.leftOrRight === leftOrRight) return
