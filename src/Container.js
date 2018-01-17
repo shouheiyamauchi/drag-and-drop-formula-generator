@@ -126,6 +126,7 @@ class Container extends Component {
   }
 
   moveLogicElement(dragId, hoverId, leftOrRight) {
+    // console.log(dragId, hoverId)
     const { logicElements } = this.state;
 
     // cancel if a dragging element is hovering over its own child
@@ -172,33 +173,31 @@ class Container extends Component {
     return this.getParentArrayAndIndex(hoverId, dragArray) !== undefined
   }
 
-  addAndDragItem(dragItem, hoverIndex, leftOrRight) {
+  addAndDragItem(dragItem, hoverId, leftOrRight) {
     const { newId, logicElements, templateItems } = this.state;
 
+    // redirect to move function if item has already been added to array
     if (dragItem.id < newId) {
-      this.moveLogicElement(logicElements.findIndex(card => card.id === dragItem.id), hoverIndex, leftOrRight)
+      this.moveLogicElement(dragItem.id, hoverId, leftOrRight)
       return
     }
 
-    if (leftOrRight) {
-      const insertIndex = leftOrRight === 'left' ? hoverIndex : hoverIndex + 1
-
-      const newObject = {
-        id: newId,
-        value: templateItems[dragItem.index].value,
-      }
-
-      this.setState(
-        update(this.state, {
-          logicElements: {
-            $splice: [[insertIndex, 0, newObject]]
-          },
-          newId: {
-            $set: newId + 1
-          }
-        })
-      )
+    const newObject = {
+      id: newId,
+      type: 'operator',
+      value: templateItems[dragItem.index].value
     }
+
+    const parentAndIndexOfHovering = this.getParentArrayAndIndex(hoverId, logicElements)
+    const hoveringObject = parentAndIndexOfHovering.parentArray[parentAndIndexOfHovering.index]
+
+    const insertIndex = leftOrRight === 'left' ? parentAndIndexOfHovering.index : parentAndIndexOfHovering.index + 1
+    parentAndIndexOfHovering.parentArray.splice(insertIndex, 0, newObject)
+
+    this.setState({
+      logicElements,
+      newId: this.state.newId + 1
+    })
   }
 
   render() {
@@ -210,6 +209,7 @@ class Container extends Component {
           {templateItems.map((templateItem, i) => (
             <TemplateItem
               key={i}
+              index={i}
               value={templateItem.value}
               newId={newId}
             />

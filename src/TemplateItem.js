@@ -13,10 +13,11 @@ const style = {
 	cursor: 'move',
 }
 
-const cardSource = {
+const templateItem = {
 	beginDrag(props) {
 		return {
-			id: props.newId
+			id: props.newId,
+			index: props.index
 		}
 	},
 }
@@ -40,6 +41,6 @@ class TemplateItem extends Component {
 	}
 }
 
-export default DragSource(ItemTypes.TEMPLATE_ITEM, cardSource, (connect, monitor) => ({
+export default DragSource(ItemTypes.TEMPLATE_ITEM, templateItem, (connect, monitor) => ({
 	connectDragSource: connect.dragSource(),
 }))(TemplateItem)

@@ -17,7 +17,7 @@ const style = {
 const bracketStyle = {
 }
 
-const cardSource = {
+const bracketSource = {
 	beginDrag(props) {
 		return {
 			id: props.id
@@ -25,8 +25,8 @@ const cardSource = {
 	},
 }
 
-const cardTarget = {
-	hover(props, monitor, component) {
+const bracketTarget = {
+  hover(props, monitor, component) {
 		if (!monitor.isOver({ shallow: true })) return
 
 		const dragItem = monitor.getItem()
@@ -41,7 +41,7 @@ const cardTarget = {
 		}
 
 		// determine whether item is on left or right side
-		const hoverElementProperties = document.getElementById('logic-element' + props.id).getBoundingClientRect()
+		const hoverElementProperties = document.getElementById('rule-builder-id-' + props.id).getBoundingClientRect()
 		const centerOfElement = (hoverElementProperties.x + hoverElementProperties.width / 2)
 		const mouseHorizontalPosition = monitor.getClientOffset().x
 
@@ -59,11 +59,50 @@ const cardTarget = {
 				props.moveLogicElement(dragId, hoverId, leftOrRight)
 				break;
 			case 'templateItem': // drag in items from the templates
-				// props.addAndDragItem(dragItem, hoverIndex, leftOrRight)
+				props.addAndDragItem(dragItem, hoverId, leftOrRight)
 				break;
 		}
 
-	},
+	}
+
+	// hover(props, monitor, component) {
+	// 	if (!monitor.isOver({ shallow: true })) return
+  //
+	// 	// const dragItem = monitor.getItem()
+	// 	// const dragId = monitor.getItem().id
+  //   //
+	// 	// const hoverItem = props
+	// 	// const hoverId = props.id
+  //
+	// 	// don't replace items with themselves
+	// 	// if (dragId === hoverId) {
+	// 	// 	return
+	// 	// }
+  //
+	// 	// determine whether item is on left or right side
+	// 	// const hoverElementProperties = document.getElementById('rule-builder-id-' + props.id).getBoundingClientRect()
+	// 	// const centerOfElement = (hoverElementProperties.x + hoverElementProperties.width / 2)
+	// 	// const mouseHorizontalPosition = monitor.getClientOffset().x
+  //   //
+	// 	// let leftOrRight = ''
+  //   //
+	// 	// if (mouseHorizontalPosition < centerOfElement) {
+	// 	// 	leftOrRight = 'left'
+	// 	// } else if (mouseHorizontalPosition > centerOfElement) {
+	// 	// 	leftOrRight = "right"
+	// 	// }
+  //
+	// 	// switch(monitor.getItemType()) {
+	// 	// 	case 'logicElement':
+	// 	// 	case 'bracket':
+	// 	// 		props.moveLogicElement(dragId, hoverId, leftOrRight)
+	// 	// 		break;
+	// 	// 	case 'templateItem': // drag in items from the templates
+	// 	// 		// props.addAndDragItem(dragItem, hoverIndex, leftOrRight)
+	// 	// 		break;
+	// 	// }
+  //
+	// },
 }
 
 class Bracket extends Component {
@@ -88,7 +127,7 @@ class Bracket extends Component {
 		} = this.props
 
 		return connectDragSource(
-			connectDropTarget(<div style={style} id={'logic-element' + id}>
+			connectDropTarget(<div style={style} id={'rule-builder-id-' + id}>
 				<span style={bracketStyle}>(</span>
 				{logicElements.map((card, i) => (
 					<LogicElement
@@ -110,11 +149,11 @@ class Bracket extends Component {
 }
 
 export default flow(
-  DragSource(ItemTypes.BRACKET, cardSource, (connect, monitor) => ({
+  DragSource(ItemTypes.BRACKET, bracketSource, (connect, monitor) => ({
   	connectDragSource: connect.dragSource(),
   	isDragging: monitor.isDragging(),
   })),
-  DropTarget([ItemTypes.BRACKET, ItemTypes.TEMPLATE_ITEM, ItemTypes.SINGLE_ELEMENT], cardTarget, connect => ({
+  DropTarget([ItemTypes.BRACKET, ItemTypes.TEMPLATE_ITEM, ItemTypes.LOGIC_ELEMENT], bracketTarget, connect => ({
   	connectDropTarget: connect.dropTarget(),
   }))
 )(Bracket)

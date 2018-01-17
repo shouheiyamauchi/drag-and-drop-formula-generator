@@ -34,7 +34,7 @@ const logicElementTarget = {
 		}
 
 		// determine whether item is on left or right side
-		const hoverElementProperties = document.getElementById('logic-element' + props.id).getBoundingClientRect()
+		const hoverElementProperties = document.getElementById('rule-builder-id-' + props.id).getBoundingClientRect()
 		const centerOfElement = (hoverElementProperties.x + hoverElementProperties.width / 2)
 		const mouseHorizontalPosition = monitor.getClientOffset().x
 
@@ -50,10 +50,9 @@ const logicElementTarget = {
 			case 'logicElement':
 			case 'bracket':
 				props.moveLogicElement(dragId, hoverId, leftOrRight)
-				// monitor.getItem().index = hoverIndex
 				break;
 			case 'templateItem': // drag in items from the templates
-				// props.addAndDragItem(dragItem, hoverIndex, leftOrRight)
+				props.addAndDragItem(dragItem, hoverId, leftOrRight)
 				break;
 		}
 
@@ -91,8 +90,8 @@ class LogicElement extends Component {
 		} = props
 		const opacity = id === draggingId ? 0.5 : 1
 
-		if (type === 'number') {
-			return <div style={{ ...style, opacity }} id={'logic-element' + id}>{value}</div>
+		if (type === 'number' || type === 'operator') {
+			return <div style={{ ...style, opacity }} id={'rule-builder-id-' + id}>{value}</div>
 		} else if (type === 'bracket') {
 			return (
 				<div>
@@ -116,11 +115,11 @@ class LogicElement extends Component {
 }
 
 export default flow(
-  DragSource(ItemTypes.SINGLE_ELEMENT, logicElementSource, (connect, monitor) => ({
+  DragSource(ItemTypes.LOGIC_ELEMENT, logicElementSource, (connect, monitor) => ({
   	connectDragSource: connect.dragSource(),
   	isDragging: monitor.isDragging(),
   })),
-  DropTarget([ItemTypes.BRACKET, ItemTypes.TEMPLATE_ITEM, ItemTypes.SINGLE_ELEMENT], logicElementTarget, connect => ({
+  DropTarget([ItemTypes.BRACKET, ItemTypes.TEMPLATE_ITEM, ItemTypes.LOGIC_ELEMENT], logicElementTarget, connect => ({
   	connectDropTarget: connect.dropTarget(),
   }))
 )(LogicElement)
