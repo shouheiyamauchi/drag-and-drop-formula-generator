@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import update from 'immutability-helper';
 import { DragDropContext } from 'react-dnd';
+import ItemTypes from './ItemTypes'
 import HTML5Backend from 'react-dnd-html5-backend';
 import TemplateItem from './TemplateItem'
 import LogicElement from './LogicElement'
@@ -125,7 +126,7 @@ class Container extends Component {
     this.setState({draggingId: id});
   }
 
-  moveLogicElement(dragId, hoverId, leftOrRight) {
+  moveLogicElement(dragId, hoverId, leftOrRight, dropTargetType) {
     // console.log(dragId, hoverId)
     const { logicElements } = this.state;
 
@@ -141,8 +142,15 @@ class Container extends Component {
     const parentAndIndexOfHovering = this.getParentArrayAndIndex(hoverId, logicElements)
     const hoveringObject = parentAndIndexOfHovering.parentArray[parentAndIndexOfHovering.index]
 
-    const insertIndex = leftOrRight === 'left' ? parentAndIndexOfHovering.index : parentAndIndexOfHovering.index + 1
-    parentAndIndexOfHovering.parentArray.splice(insertIndex, 0, draggingObject)
+    let insertIndex = null
+
+    if (dropTargetType === ItemTypes.LOGIC_ELEMENT) {
+      insertIndex = leftOrRight === 'left' ? parentAndIndexOfHovering.index : parentAndIndexOfHovering.index + 1
+      parentAndIndexOfHovering.parentArray.splice(insertIndex, 0, draggingObject)
+    } else if (dropTargetType === ItemTypes.BRACKET) {
+      insertIndex = leftOrRight === 'left' ? 0 : hoveringObject.value.length
+      hoveringObject.value.splice(insertIndex, 0, draggingObject)
+    }
 
     this.setState({logicElements})
   }
@@ -173,12 +181,12 @@ class Container extends Component {
     return this.getParentArrayAndIndex(hoverId, dragArray) !== undefined
   }
 
-  addAndDragItem(dragItem, hoverId, leftOrRight) {
+  addAndDragItem(dragItem, hoverId, leftOrRight, dropTargetType) {
     const { newId, logicElements, templateItems } = this.state;
 
     // redirect to move function if item has already been added to array
     if (dragItem.id < newId) {
-      this.moveLogicElement(dragItem.id, hoverId, leftOrRight)
+      this.moveLogicElement(dragItem.id, hoverId, leftOrRight, dropTargetType)
       return
     }
 
@@ -191,8 +199,15 @@ class Container extends Component {
     const parentAndIndexOfHovering = this.getParentArrayAndIndex(hoverId, logicElements)
     const hoveringObject = parentAndIndexOfHovering.parentArray[parentAndIndexOfHovering.index]
 
-    const insertIndex = leftOrRight === 'left' ? parentAndIndexOfHovering.index : parentAndIndexOfHovering.index + 1
-    parentAndIndexOfHovering.parentArray.splice(insertIndex, 0, newObject)
+    let insertIndex = null
+
+    if (dropTargetType === ItemTypes.LOGIC_ELEMENT) {
+      insertIndex = leftOrRight === 'left' ? parentAndIndexOfHovering.index : parentAndIndexOfHovering.index + 1
+      parentAndIndexOfHovering.parentArray.splice(insertIndex, 0, newObject)
+    } else if (dropTargetType === ItemTypes.BRACKET) {
+      insertIndex = leftOrRight === 'left' ? 0 : hoveringObject.value.length
+      hoveringObject.value.splice(insertIndex, 0, newObject)
+    }
 
     this.setState({
       logicElements,

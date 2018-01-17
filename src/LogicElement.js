@@ -49,10 +49,10 @@ const logicElementTarget = {
 		switch(monitor.getItemType()) {
 			case 'logicElement':
 			case 'bracket':
-				props.moveLogicElement(dragId, hoverId, leftOrRight)
+				props.moveLogicElement(dragId, hoverId, leftOrRight, ItemTypes.LOGIC_ELEMENT)
 				break;
 			case 'templateItem': // drag in items from the templates
-				props.addAndDragItem(dragItem, hoverId, leftOrRight)
+				props.addAndDragItem(dragItem, hoverId, leftOrRight, ItemTypes.LOGIC_ELEMENT)
 				break;
 		}
 
