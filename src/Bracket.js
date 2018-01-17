@@ -29,41 +29,7 @@ const bracketTarget = {
   hover(props, monitor, component) {
 		if (!monitor.isOver({ shallow: true })) return
 
-		const dragItem = monitor.getItem()
-		const dragId = monitor.getItem().id
-
-		const hoverItem = props
-		const hoverId = props.id
-
-		// don't replace items with themselves
-		if (dragId === hoverId) {
-			return
-		}
-
-		// determine whether item is on left or right side
-		const hoverElementProperties = document.getElementById('rule-builder-id-' + hoverId).getBoundingClientRect()
-		const centerOfElement = (hoverElementProperties.x + hoverElementProperties.width / 2)
-		const mouseHorizontalPosition = monitor.getClientOffset().x
-
-		let leftOrRight = ''
-
-		if (mouseHorizontalPosition < centerOfElement) {
-			leftOrRight = 'left'
-		} else if (mouseHorizontalPosition > centerOfElement) {
-			leftOrRight = "right"
-		}
-
     props.moveElement(props, monitor, ItemTypes.LOGIC_ELEMENT)
-
-		// switch(monitor.getItemType()) {
-		// 	case 'logicElement':
-		// 	case 'bracket':
-		// 		props.moveLogicElement(props, monitor, ItemTypes.BRACKET)
-		// 		break;
-		// 	case 'templateItem': // drag in items from the templates
-		// 		props.addAndDragItem(props, monitor, ItemTypes.BRACKET)
-		// 		break;
-		// }
 	}
 }
 
@@ -83,9 +49,7 @@ class Bracket extends Component {
       draggingId,
       moveElement,
       updateDragging,
-			logicElements,
-			moveLogicElement,
-			addAndDragItem,
+			logicElements
 		} = this.props
 
 		return connectDragSource(
@@ -100,8 +64,6 @@ class Bracket extends Component {
             draggingId={draggingId}
             moveElement={moveElement}
             updateDragging={updateDragging}
-						moveLogicElement={moveLogicElement}
-						addAndDragItem={addAndDragItem}
 					/>
 				))}
 			<span style={bracketStyle}>)</span>

@@ -22,42 +22,7 @@ const logicElementTarget = {
 	hover(props, monitor, component) {
 		if (!monitor.isOver({ shallow: true })) return
 
-		const dragItem = monitor.getItem()
-		const dragId = monitor.getItem().id
-
-		const hoverItem = props
-		const hoverId = props.id
-
-		// don't replace items with themselves
-		if (dragId === hoverId) {
-			return
-		}
-
-		// determine whether item is on left or right side
-		const hoverElementProperties = document.getElementById('rule-builder-id-' + hoverId).getBoundingClientRect()
-		const centerOfElement = (hoverElementProperties.x + hoverElementProperties.width / 2)
-		const mouseHorizontalPosition = monitor.getClientOffset().x
-
-		let leftOrRight = ''
-
-		if (mouseHorizontalPosition < centerOfElement) {
-			leftOrRight = 'left'
-		} else if (mouseHorizontalPosition > centerOfElement) {
-			leftOrRight = "right"
-		}
-
 		props.moveElement(props, monitor, ItemTypes.LOGIC_ELEMENT)
-
-		// switch(monitor.getItemType()) {
-		// 	case 'logicElement':
-		// 	case 'bracket':
-		// 		props.moveLogicElement(props, monitor, ItemTypes.LOGIC_ELEMENT)
-		// 		break;
-		// 	case 'templateItem': // drag in items from the templates
-		// 		props.addAndDragItem(props, monitor, ItemTypes.LOGIC_ELEMENT)
-		// 		break;
-		// }
-
 	},
 }
 
@@ -67,8 +32,7 @@ class LogicElement extends Component {
 		connectDropTarget: PropTypes.func.isRequired,
 		isDragging: PropTypes.bool.isRequired,
 		id: PropTypes.any.isRequired,
-		value: PropTypes.any.isRequired,
-		moveLogicElement: PropTypes.func.isRequired,
+		value: PropTypes.any.isRequired
 	}
 
 	renderObject = props => {
@@ -86,9 +50,7 @@ class LogicElement extends Component {
 			type,
 			draggingId,
 			moveElement,
-			updateDragging,
-			moveLogicElement,
-			addAndDragItem,
+			updateDragging
 		} = props
 		const opacity = id === draggingId ? 0.5 : 1
 
@@ -97,7 +59,13 @@ class LogicElement extends Component {
 		} else if (type === 'bracket') {
 			return (
 				<div>
-					<Bracket id={id} logicElements={value} draggingId={draggingId} updateDragging={updateDragging} moveElement={moveElement} moveLogicElement={moveLogicElement} addAndDragItem={addAndDragItem} />
+					<Bracket
+						id={id}
+						logicElements={value}
+						draggingId={draggingId}
+						updateDragging={updateDragging}
+						moveElement={moveElement}
+					/>
 				</div>
 
 			)

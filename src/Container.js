@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import update from 'immutability-helper';
 import { DragDropContext } from 'react-dnd';
 import ItemTypes from './ItemTypes'
 import HTML5Backend from 'react-dnd-html5-backend';
@@ -332,8 +331,6 @@ console.log(hoverId)
               moveElement={this.moveElement}
               draggingId={this.state.draggingId}
               updateDragging={this.updateDragging}
-              moveLogicElement={this.moveLogicElement}
-              addAndDragItem={this.addAndDragItem}
             />
           ))}
         </div>
