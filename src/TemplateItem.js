@@ -25,20 +25,18 @@ const cardSource = {
 class TemplateItem extends Component {
 	static propTypes = {
 		connectDragSource: PropTypes.func.isRequired,
-		index: PropTypes.number.isRequired,
-		text: PropTypes.string.isRequired,
+		value: PropTypes.string.isRequired,
 	}
 
 	render() {
 		const {
 			id,
-			text,
-			isDragging,
+			value,
 			connectDragSource,
 		} = this.props
 
 		return connectDragSource(
-			<div style={{ ...style }}>{text}</div>
+			<div style={{ ...style }}>{value}</div>
 		)
 	}
 }

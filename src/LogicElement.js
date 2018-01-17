@@ -6,34 +6,29 @@ import { DragSource, DropTarget } from 'react-dnd'
 import ItemTypes from './ItemTypes'
 import Bracket from './Bracket'
 
-const style = {
-	border: '1px dashed gray',
-	padding: '0.5rem 1rem',
-	marginBottom: '.5rem',
-	backgroundColor: 'white',
-	cursor: 'move',
-}
-
 const cardSource = {
 	beginDrag(props) {
+		props.updateDragging(props.id)
 		return {
 			id: props.id,
 			index: props.index,
 		}
 	},
+	endDrag(props) {
+		props.updateDragging(null)
+	}
 }
 
 const cardTarget = {
 	hover(props, monitor, component) {
-		if (monitor.isOver({ shallow: true })) console.log(props)
-		if (monitor.isOver({ shallow: true })) console.log(new Date().getTime())
-		return
+		if (!monitor.isOver({ shallow: true })) return
+		// if (monitor.isOver({ shallow: true })) console.log(new Date().getTime())
+		// return
 
 		const dragItem = monitor.getItem()
-		const dragIndex = monitor.getItem().index
 		const dragId = monitor.getItem().id
 
-		const hoverIndex = props.index
+		const hoverItem = props
 		const hoverId = props.id
 
 		// don't replace items with themselves
@@ -42,7 +37,7 @@ const cardTarget = {
 		}
 
 		// determine whether item is on left or right side
-		const hoverElementProperties = document.getElementById(props.id).getBoundingClientRect()
+		const hoverElementProperties = document.getElementById('logic-element' + props.id).getBoundingClientRect()
 		const centerOfElement = (hoverElementProperties.x + hoverElementProperties.width / 2)
 		const mouseHorizontalPosition = monitor.getClientOffset().x
 
@@ -55,54 +50,54 @@ const cardTarget = {
 		}
 
 		switch(monitor.getItemType()) {
-			case 'card':
-				props.moveCard(dragIndex, hoverIndex, leftOrRight)
-				monitor.getItem().index = hoverIndex
+			case 'singleElement':
+				props.moveLogicElement(dragId, hoverId, leftOrRight)
+				// monitor.getItem().index = hoverIndex
 				break;
 			case 'templateItem': // drag in items from the templates
-				props.addAndDragItem(dragItem, hoverIndex, leftOrRight)
+				// props.addAndDragItem(dragItem, hoverIndex, leftOrRight)
 				break;
 		}
 
 	},
 }
 
-class Card extends Component {
+class LogicElement extends Component {
 	static propTypes = {
 		connectDragSource: PropTypes.func.isRequired,
 		connectDropTarget: PropTypes.func.isRequired,
-		index: PropTypes.number.isRequired,
 		isDragging: PropTypes.bool.isRequired,
 		id: PropTypes.any.isRequired,
-		text: PropTypes.any.isRequired,
-		moveCard: PropTypes.func.isRequired,
+		value: PropTypes.any.isRequired,
+		moveLogicElement: PropTypes.func.isRequired,
 	}
 
 	renderObject = props => {
 		const style = {
-			border: '1px dashed gray',
+			display: 'flex',
+			alignItems: 'center',
+			border: '1px solid gray',
 			padding: '0.5rem 1rem',
-			marginBottom: '.5rem',
 			backgroundColor: 'white',
-			cursor: 'move',
 		}
 
 		const {
 			id,
-			text,
+			value,
 			type,
-			isDragging,
-			moveCard,
+			draggingId,
+			moveLogicElement,
 			addAndDragItem,
 		} = props
-		const opacity = isDragging ? 0.5 : 1
+		const opacity = id === draggingId ? 0.5 : 1
 
-		if (type === 'primary') {
-			return <div style={{ ...style, opacity }} id={id}>{text}</div>
+		if (type === 'number') {
+			// console.log(props.isDragging)
+			return <div style={{ ...style, opacity }} id={'logic-element' + id}>{value}</div>
 		} else if (type === 'bracket') {
 			return (
 				<div>
-					<Bracket id={id} cards={text} moveCard={moveCard} addAndDragItem={addAndDragItem} />
+					<Bracket id={id} singleElements={value} draggingId={draggingId} moveLogicElement={moveLogicElement} addAndDragItem={addAndDragItem} />
 				</div>
 
 			)
@@ -122,11 +117,11 @@ class Card extends Component {
 }
 
 export default flow(
-  DragSource(ItemTypes.CARD, cardSource, (connect, monitor) => ({
+  DragSource(ItemTypes.SINGLE_ELEMENT, cardSource, (connect, monitor) => ({
   	connectDragSource: connect.dragSource(),
   	isDragging: monitor.isDragging(),
   })),
-  DropTarget([ItemTypes.BRACKET, ItemTypes.TEMPLATE_ITEM, ItemTypes.CARD], cardTarget, connect => ({
+  DropTarget([ItemTypes.BRACKET, ItemTypes.TEMPLATE_ITEM, ItemTypes.SINGLE_ELEMENT], cardTarget, connect => ({
   	connectDropTarget: connect.dropTarget(),
   }))
-)(Card)
+)(LogicElement)

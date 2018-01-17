@@ -1,5 +1,5 @@
 export default {
-  BRACKET: 'bracket',
   TEMPLATE_ITEM: 'templateItem',
-  CARD: 'card'
+  SINGLE_ELEMENT: 'singleElement',
+  BRACKET: 'bracket',
 }

@@ -3,16 +3,18 @@ import PropTypes from 'prop-types'
 import { findDOMNode } from 'react-dom'
 import { DragSource, DropTarget } from 'react-dnd'
 import ItemTypes from './ItemTypes'
-import Card from './Card'
+import LogicElement from './LogicElement'
 import flow from 'lodash/flow';
 
 const style = {
   display: 'flex',
   flexDirection: 'row',
+  alignItems: 'center',
+  border: '1px dashed gray',
+  padding: '3px',
 }
 
 const bracketStyle = {
-	padding: '0.5rem 1rem'
 }
 
 const cardSource = {
@@ -26,8 +28,8 @@ const cardSource = {
 
 const cardTarget = {
 	hover(props, monitor, component) {
-		if (monitor.isOver({ shallow: true })) console.log(props)
-		if (monitor.isOver({ shallow: true })) console.log(new Date().getTime())
+		// if (monitor.isOver({ shallow: true })) console.log(props)
+		// if (monitor.isOver({ shallow: true })) console.log(new Date().getTime())
 		return
 
 		const dragIndex = monitor.getItem().index
@@ -43,7 +45,7 @@ const cardTarget = {
 			return
 		}
 
-		const hoverElementProperties = document.getElementById(props.id).getBoundingClientRect()
+		const hoverElementProperties = document.getElementById('logic-element' + props.id).getBoundingClientRect()
 		const centerOfElement = (hoverElementProperties.x + hoverElementProperties.width / 2)
 		const mouseHorizontalPosition = monitor.getClientOffset().x
 
@@ -58,7 +60,7 @@ const cardTarget = {
 		switch(monitor.getItemType()) {
 			case 'card':
 				// Time to actually perform the action
-				props.moveCard(dragIndex, hoverIndex, leftOrRight)
+				props.moveLogicElement(dragIndex, hoverIndex, leftOrRight)
 
 				// Note: we're mutating the monitor item here!
 				// Generally it's better to avoid mutations,
@@ -79,32 +81,31 @@ class Bracket extends Component {
 		connectDragSource: PropTypes.func.isRequired,
 		connectDropTarget: PropTypes.func.isRequired,
 		isDragging: PropTypes.bool.isRequired,
-		cards: PropTypes.array.isRequired,
+		singleElements: PropTypes.array.isRequired,
 	}
 
 	render() {
 		const {
 			id,
-			isDragging,
 			connectDragSource,
 			connectDropTarget,
-			cards,
-			moveCard,
+      draggingId,
+			singleElements,
+			moveLogicElement,
 			addAndDragItem,
 		} = this.props
-		const opacity = isDragging ? 0 : 1
 
 		return connectDragSource(
-			connectDropTarget(<div style={style}>
+			connectDropTarget(<div style={style} id={'logic-element' + id}>
 				<span style={bracketStyle}>(</span>
-				{cards.map((card, i) => (
-					<Card
+				{singleElements.map((card, i) => (
+					<LogicElement
 						key={card.id}
-						index={i}
 						id={card.id}
-						text={card.text}
+						value={card.value}
 						type={card.type}
-						moveCard={moveCard}
+            draggingId={draggingId}
+						moveLogicElement={moveLogicElement}
 						addAndDragItem={addAndDragItem}
 					/>
 				))}
@@ -119,7 +120,7 @@ export default flow(
   	connectDragSource: connect.dragSource(),
   	isDragging: monitor.isDragging(),
   })),
-  DropTarget([ItemTypes.BRACKET, ItemTypes.TEMPLATE_ITEM, ItemTypes.CARD], cardTarget, connect => ({
+  DropTarget([ItemTypes.BRACKET, ItemTypes.TEMPLATE_ITEM, ItemTypes.SINGLE_ELEMENT], cardTarget, connect => ({
   	connectDropTarget: connect.dropTarget(),
   }))
 )(Bracket)

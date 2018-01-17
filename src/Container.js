@@ -3,7 +3,7 @@ import update from 'immutability-helper';
 import { DragDropContext } from 'react-dnd';
 import HTML5Backend from 'react-dnd-html5-backend';
 import TemplateItem from './TemplateItem'
-import Card from './Card'
+import LogicElement from './LogicElement'
 
 const style = {
   display: 'flex',
@@ -15,119 +15,177 @@ class Container extends Component {
   constructor(props) {
     super(props);
     this.addAndDragItem = this.addAndDragItem.bind(this);
-    this.moveCard = this.moveCard.bind(this);
+    this.moveLogicElement = this.moveLogicElement.bind(this);
     this.state = {
-      newId: 8,
+      draggingId: null,
+      newId: 13,
       templateItems: [
         {
-          text: '+'
+          value: '+'
         },
         {
-          text: '-'
+          value: '-'
         },
         {
-          text: '/'
+          value: '/'
         },
         {
-          text: '*'
+          value: '*'
         }
       ],
-      cards: [
+      singleElements: [
 				{
 					id: 1,
-					text: 'Number 1',
-          type: 'primary'
+          type: 'number',
+					value: '1'
 				},
 				{
 					id: 2,
-					text: 'Number 2',
-          type: 'primary'
+          type: 'number',
+					value: '2'
 				},
 				{
 					id: 3,
-					text: [
+          type: 'bracket',
+					value: [
             {
     					id: 8,
-    					text: 'Number 10',
-              type: 'primary'
+              type: 'number',
+    					value: '8'
     				},
     				{
     					id: 9,
-    					text: 'Number 20',
-              type: 'primary'
+              type: 'number',
+    					value: '9'
     				},
             {
     					id: 10,
-    					text: [
+              type: 'bracket',
+    					value: [
                 {
         					id: 11,
-        					text: 'Number 10',
-                  type: 'primary'
+                  type: 'number',
+        					value: '11'
         				},
         				{
         					id: 12,
-        					text: 'Number 20',
-                  type: 'primary'
+                  type: 'number',
+        					value: '12'
         				},
               ],
-              type: 'bracket'
     				},
-          ],
-          type: 'bracket'
+          ]
 				},
 				{
 					id: 4,
-					text: 'Number 4',
-          type: 'primary'
+          type: 'number',
+					value: '4'
 				},
 				{
 					id: 5,
-					text: 'Number 5',
-          type: 'primary'
+          type: 'number',
+					value: '5'
 				},
 				{
 					id: 6,
-					text: 'Number 6',
-          type: 'primary'
+          type: 'number',
+					value: '6'
 				},
 				{
 					id: 7,
-					text: 'Number 7',
-          type: 'primary'
+          type: 'number',
+					value: '7'
 				},
 			]
     }
   }
 
-  moveCard(dragIndex, hoverIndex, leftOrRight) {
-    const { cards } = this.state;
+  updateDragging = id => {
+    this.setState({draggingId: id});
+  }
 
-    if (leftOrRight === 'left') {
-      const hoverCard = cards[hoverIndex]
-      this.setState(
-        update(this.state, {
-          cards: {
-            $splice: [[hoverIndex, 1], [dragIndex, 0, hoverCard]]
+  moveLogicElement(dragIndex, hoverIndex, leftOrRight) {
+    const { singleElements } = this.state;
+
+    const getParentArrayAndIndex = (singleElementid, array) => {
+      for (let i = 0; i < array.length; i++) {
+        if (array[i].id === singleElementid) {
+          return {parentArray: array, index: i}
+        }
+        if (array[i].value.constructor === Array) {
+          const nestedArray = getParentArrayAndIndex(singleElementid, array[i].value)
+          if (nestedArray) {
+            return nestedArray
           }
-        })
-      )
-    } else if (leftOrRight === 'right') {
-      const dragCard = cards[dragIndex]
-      this.setState(
-        update(this.state, {
-          cards: {
-            $splice: [[dragIndex, 1], [hoverIndex, 0, dragCard]]
-          }
-        })
-      )
+        }
+      }
     }
+
+    const parentAndIndexOfDragging = getParentArrayAndIndex(dragIndex, singleElements)
+    // clone the parent array to prevent mutating original object
+    const draggingObject = JSON.parse(JSON.stringify(parentAndIndexOfDragging.parentArray[parentAndIndexOfDragging.index]))
+    parentAndIndexOfDragging.parentArray.splice(parentAndIndexOfDragging.index, 1)
+
+    const parentAndIndexOfHovering = getParentArrayAndIndex(hoverIndex, singleElements)
+    const hoveringObject = parentAndIndexOfHovering.parentArray[parentAndIndexOfHovering.index]
+
+    const insertIndex = leftOrRight === 'left' ? parentAndIndexOfHovering.index : parentAndIndexOfHovering.index + 1
+
+    parentAndIndexOfHovering.parentArray.splice(insertIndex, 0, draggingObject)
+
+    this.setState({singleElements})
+
+    // if (leftOrRight === 'left') {
+    //   const parentAndIndexOfDragging = getParentArrayAndIndex(dragIndex, singleElements)
+    //   const draggingObject = JSON.parse(JSON.stringify(parentAndIndexOfDragging.parentArray[parentAndIndexOfDragging.index]))
+    //   parentAndIndexOfDragging.parentArray.splice(parentAndIndexOfDragging.index, 1)
+    //
+    //   const parentAndIndexOfHovering = getParentArrayAndIndex(hoverIndex, singleElements)
+    //   const hoveringObject = parentAndIndexOfHovering.parentArray[parentAndIndexOfHovering.index]
+    //
+    //   const insertIndex = leftOrRight === 'left' ? parentAndIndexOfHovering.index : parentAndIndexOfHovering.index + 1
+    //
+    //   parentAndIndexOfHovering.parentArray.splice(insertIndex, 0, draggingObject)
+    //
+    //   this.setState({singleElements})
+    // } else if (leftOrRight === 'right') {
+    //   const parentAndIndexOfDragging = getParentArrayAndIndex(dragIndex, singleElements)
+    //   const draggingObject = JSON.parse(JSON.stringify(parentAndIndexOfDragging.parentArray[parentAndIndexOfDragging.index]))
+    //   parentAndIndexOfDragging.parentArray.splice(parentAndIndexOfDragging.index, 1)
+    //
+    //   const parentAndIndexOfHovering = getParentArrayAndIndex(hoverIndex, singleElements)
+    //   const hoveringObject = parentAndIndexOfHovering.parentArray[parentAndIndexOfHovering.index]
+    //   parentAndIndexOfHovering.parentArray.splice(parentAndIndexOfHovering.index + 1, 0, draggingObject)
+    //
+    //   this.setState({singleElements})
+    // }
+
+    // if (leftOrRight === 'left') {
+    //   const hoverLogicElement = singleElements[hoverIndex]
+    //   this.setState(
+    //     update(this.state, {
+    //       singleElements: {
+    //         $splice: [[hoverIndex, 1], [dragIndex, 0, hoverLogicElement]]
+    //       }
+    //     })
+    //   )
+    // } else if (leftOrRight === 'right') {
+    //   const dragLogicElement = singleElements[dragIndex]
+    //   this.setState(
+    //     update(this.state, {
+    //       singleElements: {
+    //         $splice: [[dragIndex, 1], [hoverIndex, 0, dragLogicElement]]
+    //       }
+    //     })
+    //   )
+    // }
   }
 
   addAndDragItem(dragItem, hoverIndex, leftOrRight) {
-    const { newId, cards, templateItems } = this.state;
+    const { newId, singleElements, templateItems } = this.state;
 
     if (dragItem.id < newId) {
-      this.moveCard(cards.findIndex(card => card.id === dragItem.id), hoverIndex, leftOrRight)
+      this.moveLogicElement(singleElements.findIndex(card => card.id === dragItem.id), hoverIndex, leftOrRight)
       return
     }
 
@@ -136,12 +194,12 @@ class Container extends Component {
 
       const newObject = {
         id: newId,
-        text: templateItems[dragItem.index].text,
+        value: templateItems[dragItem.index].value,
       }
 
       this.setState(
         update(this.state, {
-          cards: {
+          singleElements: {
             $splice: [[insertIndex, 0, newObject]]
           },
           newId: {
@@ -153,7 +211,7 @@ class Container extends Component {
   }
 
   render() {
-    const { templateItems, cards, newId } = this.state
+    const { templateItems, singleElements, newId } = this.state
 
     return (
       <div>
@@ -161,21 +219,21 @@ class Container extends Component {
           {templateItems.map((templateItem, i) => (
             <TemplateItem
               key={i}
-              index={i}
-              text={templateItem.text}
+              value={templateItem.value}
               newId={newId}
             />
           ))}
         </div>
         <div style={style}>
-          {cards.map((card, i) => (
-            <Card
+          {singleElements.map((card, i) => (
+            <LogicElement
               key={card.id}
-              index={i}
               id={card.id}
               type={card.type}
-              text={card.text}
-              moveCard={this.moveCard}
+              value={card.value}
+              draggingId={this.state.draggingId}
+              updateDragging={this.updateDragging}
+              moveLogicElement={this.moveLogicElement}
               addAndDragItem={this.addAndDragItem}
             />
           ))}
