@@ -38,7 +38,7 @@ class Container extends Component {
           value: '*'
         }
       ],
-      singleElements: [
+      logicElements: [
 				{
 					id: 1,
           type: 'number',
@@ -126,33 +126,33 @@ class Container extends Component {
   }
 
   moveLogicElement(dragId, hoverId, leftOrRight) {
-    const { singleElements } = this.state;
+    const { logicElements } = this.state;
 
     // cancel if a dragging element is hovering over its own child
-    if (this.getSingleElement(dragId).type === 'bracket' && this.hoverIsChildOfDrag(dragId, hoverId, singleElements)) return
+    if (this.getSingleElement(dragId).type === 'bracket' && this.hoverIsChildOfDrag(dragId, hoverId, logicElements)) return
 
-    const parentAndIndexOfDragging = this.getParentArrayAndIndex(dragId, singleElements)
+    const parentAndIndexOfDragging = this.getParentArrayAndIndex(dragId, logicElements)
     // clone the parent array to prevent mutating original object
     const draggingObject = JSON.parse(JSON.stringify(parentAndIndexOfDragging.parentArray[parentAndIndexOfDragging.index]))
 
     parentAndIndexOfDragging.parentArray.splice(parentAndIndexOfDragging.index, 1)
 
-    const parentAndIndexOfHovering = this.getParentArrayAndIndex(hoverId, singleElements)
+    const parentAndIndexOfHovering = this.getParentArrayAndIndex(hoverId, logicElements)
     const hoveringObject = parentAndIndexOfHovering.parentArray[parentAndIndexOfHovering.index]
 
     const insertIndex = leftOrRight === 'left' ? parentAndIndexOfHovering.index : parentAndIndexOfHovering.index + 1
     parentAndIndexOfHovering.parentArray.splice(insertIndex, 0, draggingObject)
 
-    this.setState({singleElements})
+    this.setState({logicElements})
   }
 
-  getParentArrayAndIndex(singleElementId, array) {
+  getParentArrayAndIndex(logicElementId, array) {
     for (let i = 0; i < array.length; i++) {
-      if (array[i].id === singleElementId) {
+      if (array[i].id === logicElementId) {
         return {parentArray: array, index: i}
       }
       if (array[i].value.constructor === Array) {
-        const nestedArray = this.getParentArrayAndIndex(singleElementId, array[i].value)
+        const nestedArray = this.getParentArrayAndIndex(logicElementId, array[i].value)
         if (nestedArray) {
           return nestedArray
         }
@@ -160,10 +160,10 @@ class Container extends Component {
     }
   }
 
-  getSingleElement(singleElementId) {
-    const singleElementProperties = this.getParentArrayAndIndex(singleElementId, this.state.singleElements);
+  getSingleElement(logicElementId) {
+    const logicElementProperties = this.getParentArrayAndIndex(logicElementId, this.state.logicElements);
 
-    return singleElementProperties.parentArray[singleElementProperties.index]
+    return logicElementProperties.parentArray[logicElementProperties.index]
   }
 
   hoverIsChildOfDrag(dragId, hoverId, array) {
@@ -173,10 +173,10 @@ class Container extends Component {
   }
 
   addAndDragItem(dragItem, hoverIndex, leftOrRight) {
-    const { newId, singleElements, templateItems } = this.state;
+    const { newId, logicElements, templateItems } = this.state;
 
     if (dragItem.id < newId) {
-      this.moveLogicElement(singleElements.findIndex(card => card.id === dragItem.id), hoverIndex, leftOrRight)
+      this.moveLogicElement(logicElements.findIndex(card => card.id === dragItem.id), hoverIndex, leftOrRight)
       return
     }
 
@@ -190,7 +190,7 @@ class Container extends Component {
 
       this.setState(
         update(this.state, {
-          singleElements: {
+          logicElements: {
             $splice: [[insertIndex, 0, newObject]]
           },
           newId: {
@@ -202,7 +202,7 @@ class Container extends Component {
   }
 
   render() {
-    const { templateItems, singleElements, newId } = this.state
+    const { templateItems, logicElements, newId } = this.state
 
     return (
       <div>
@@ -216,7 +216,7 @@ class Container extends Component {
           ))}
         </div>
         <div style={style}>
-          {singleElements.map((card, i) => (
+          {logicElements.map((card, i) => (
             <LogicElement
               key={card.id}
               id={card.id}

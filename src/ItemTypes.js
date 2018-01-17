@@ -1,5 +1,5 @@
 export default {
   TEMPLATE_ITEM: 'templateItem',
-  SINGLE_ELEMENT: 'singleElement',
+  SINGLE_ELEMENT: 'logicElement',
   BRACKET: 'bracket',
 }

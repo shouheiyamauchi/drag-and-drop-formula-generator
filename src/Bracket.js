@@ -54,7 +54,7 @@ const cardTarget = {
 		}
 
 		switch(monitor.getItemType()) {
-			case 'singleElement':
+			case 'logicElement':
 			case 'bracket':
 				props.moveLogicElement(dragId, hoverId, leftOrRight)
 				break;
@@ -71,7 +71,7 @@ class Bracket extends Component {
 		connectDragSource: PropTypes.func.isRequired,
 		connectDropTarget: PropTypes.func.isRequired,
 		isDragging: PropTypes.bool.isRequired,
-		singleElements: PropTypes.array.isRequired,
+		logicElements: PropTypes.array.isRequired,
 	}
 
 	render() {
@@ -81,7 +81,7 @@ class Bracket extends Component {
 			connectDropTarget,
       draggingId,
       updateDragging,
-			singleElements,
+			logicElements,
 			moveLogicElement,
       moveBracket,
 			addAndDragItem,
@@ -90,7 +90,7 @@ class Bracket extends Component {
 		return connectDragSource(
 			connectDropTarget(<div style={style} id={'logic-element' + id}>
 				<span style={bracketStyle}>(</span>
-				{singleElements.map((card, i) => (
+				{logicElements.map((card, i) => (
 					<LogicElement
 						key={card.id}
 						id={card.id}

@@ -47,7 +47,7 @@ const logicElementTarget = {
 		}
 
 		switch(monitor.getItemType()) {
-			case 'singleElement':
+			case 'logicElement':
 			case 'bracket':
 				props.moveLogicElement(dragId, hoverId, leftOrRight)
 				// monitor.getItem().index = hoverIndex
@@ -96,7 +96,7 @@ class LogicElement extends Component {
 		} else if (type === 'bracket') {
 			return (
 				<div>
-					<Bracket id={id} singleElements={value} draggingId={draggingId} updateDragging={updateDragging} moveLogicElement={moveLogicElement} moveBracket={moveBracket} addAndDragItem={addAndDragItem} />
+					<Bracket id={id} logicElements={value} draggingId={draggingId} updateDragging={updateDragging} moveLogicElement={moveLogicElement} moveBracket={moveBracket} addAndDragItem={addAndDragItem} />
 				</div>
 
 			)
