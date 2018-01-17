@@ -14,11 +14,16 @@ const style = {
 class Container extends Component {
   constructor(props) {
     super(props);
+    this.updateDragging = this.updateDragging.bind(this);
     this.addAndDragItem = this.addAndDragItem.bind(this);
     this.moveLogicElement = this.moveLogicElement.bind(this);
+    this.getParentArrayAndIndex = this.getParentArrayAndIndex.bind(this);
+    this.getSingleElement = this.getSingleElement.bind(this);
+    this.hoverIsChildOfDrag = this.hoverIsChildOfDrag.bind(this);
+
     this.state = {
       draggingId: null,
-      newId: 13,
+      newId: 16,
       templateItems: [
         {
           value: '+'
@@ -91,6 +96,22 @@ class Container extends Component {
           type: 'number',
 					value: '6'
 				},
+        {
+					id: 13,
+          type: 'bracket',
+					value: [
+            {
+    					id: 14,
+              type: 'number',
+    					value: '14'
+    				},
+    				{
+    					id: 15,
+              type: 'number',
+    					value: '15'
+    				}
+          ]
+        },
 				{
 					id: 7,
           type: 'number',
@@ -100,85 +121,55 @@ class Container extends Component {
     }
   }
 
-  updateDragging = id => {
+  updateDragging(id) {
     this.setState({draggingId: id});
   }
 
-  moveLogicElement(dragIndex, hoverIndex, leftOrRight) {
+  moveLogicElement(dragId, hoverId, leftOrRight) {
     const { singleElements } = this.state;
 
-    const getParentArrayAndIndex = (singleElementid, array) => {
-      for (let i = 0; i < array.length; i++) {
-        if (array[i].id === singleElementid) {
-          return {parentArray: array, index: i}
-        }
-        if (array[i].value.constructor === Array) {
-          const nestedArray = getParentArrayAndIndex(singleElementid, array[i].value)
-          if (nestedArray) {
-            return nestedArray
-          }
-        }
-      }
-    }
+    // cancel if a dragging element is hovering over its own child
+    if (this.getSingleElement(dragId).type === 'bracket' && this.hoverIsChildOfDrag(dragId, hoverId, singleElements)) return
 
-    const parentAndIndexOfDragging = getParentArrayAndIndex(dragIndex, singleElements)
+    const parentAndIndexOfDragging = this.getParentArrayAndIndex(dragId, singleElements)
     // clone the parent array to prevent mutating original object
     const draggingObject = JSON.parse(JSON.stringify(parentAndIndexOfDragging.parentArray[parentAndIndexOfDragging.index]))
+
     parentAndIndexOfDragging.parentArray.splice(parentAndIndexOfDragging.index, 1)
 
-    const parentAndIndexOfHovering = getParentArrayAndIndex(hoverIndex, singleElements)
+    const parentAndIndexOfHovering = this.getParentArrayAndIndex(hoverId, singleElements)
     const hoveringObject = parentAndIndexOfHovering.parentArray[parentAndIndexOfHovering.index]
 
     const insertIndex = leftOrRight === 'left' ? parentAndIndexOfHovering.index : parentAndIndexOfHovering.index + 1
-
     parentAndIndexOfHovering.parentArray.splice(insertIndex, 0, draggingObject)
 
     this.setState({singleElements})
+  }
 
-    // if (leftOrRight === 'left') {
-    //   const parentAndIndexOfDragging = getParentArrayAndIndex(dragIndex, singleElements)
-    //   const draggingObject = JSON.parse(JSON.stringify(parentAndIndexOfDragging.parentArray[parentAndIndexOfDragging.index]))
-    //   parentAndIndexOfDragging.parentArray.splice(parentAndIndexOfDragging.index, 1)
-    //
-    //   const parentAndIndexOfHovering = getParentArrayAndIndex(hoverIndex, singleElements)
-    //   const hoveringObject = parentAndIndexOfHovering.parentArray[parentAndIndexOfHovering.index]
-    //
-    //   const insertIndex = leftOrRight === 'left' ? parentAndIndexOfHovering.index : parentAndIndexOfHovering.index + 1
-    //
-    //   parentAndIndexOfHovering.parentArray.splice(insertIndex, 0, draggingObject)
-    //
-    //   this.setState({singleElements})
-    // } else if (leftOrRight === 'right') {
-    //   const parentAndIndexOfDragging = getParentArrayAndIndex(dragIndex, singleElements)
-    //   const draggingObject = JSON.parse(JSON.stringify(parentAndIndexOfDragging.parentArray[parentAndIndexOfDragging.index]))
-    //   parentAndIndexOfDragging.parentArray.splice(parentAndIndexOfDragging.index, 1)
-    //
-    //   const parentAndIndexOfHovering = getParentArrayAndIndex(hoverIndex, singleElements)
-    //   const hoveringObject = parentAndIndexOfHovering.parentArray[parentAndIndexOfHovering.index]
-    //   parentAndIndexOfHovering.parentArray.splice(parentAndIndexOfHovering.index + 1, 0, draggingObject)
-    //
-    //   this.setState({singleElements})
-    // }
+  getParentArrayAndIndex(singleElementId, array) {
+    for (let i = 0; i < array.length; i++) {
+      if (array[i].id === singleElementId) {
+        return {parentArray: array, index: i}
+      }
+      if (array[i].value.constructor === Array) {
+        const nestedArray = this.getParentArrayAndIndex(singleElementId, array[i].value)
+        if (nestedArray) {
+          return nestedArray
+        }
+      }
+    }
+  }
 
-    // if (leftOrRight === 'left') {
-    //   const hoverLogicElement = singleElements[hoverIndex]
-    //   this.setState(
-    //     update(this.state, {
-    //       singleElements: {
-    //         $splice: [[hoverIndex, 1], [dragIndex, 0, hoverLogicElement]]
-    //       }
-    //     })
-    //   )
-    // } else if (leftOrRight === 'right') {
-    //   const dragLogicElement = singleElements[dragIndex]
-    //   this.setState(
-    //     update(this.state, {
-    //       singleElements: {
-    //         $splice: [[dragIndex, 1], [hoverIndex, 0, dragLogicElement]]
-    //       }
-    //     })
-    //   )
-    // }
+  getSingleElement(singleElementId) {
+    const singleElementProperties = this.getParentArrayAndIndex(singleElementId, this.state.singleElements);
+
+    return singleElementProperties.parentArray[singleElementProperties.index]
+  }
+
+  hoverIsChildOfDrag(dragId, hoverId, array) {
+    const dragArray = this.getSingleElement(dragId).value
+
+    return this.getParentArrayAndIndex(hoverId, dragArray) !== undefined
   }
 
   addAndDragItem(dragItem, hoverIndex, leftOrRight) {
@@ -234,6 +225,7 @@ class Container extends Component {
               draggingId={this.state.draggingId}
               updateDragging={this.updateDragging}
               moveLogicElement={this.moveLogicElement}
+              moveBracket={this.moveBracket}
               addAndDragItem={this.addAndDragItem}
             />
           ))}

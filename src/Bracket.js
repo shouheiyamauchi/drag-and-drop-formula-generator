@@ -20,31 +20,27 @@ const bracketStyle = {
 const cardSource = {
 	beginDrag(props) {
 		return {
-			id: props.id,
-			index: props.index,
+			id: props.id
 		}
 	},
 }
 
 const cardTarget = {
 	hover(props, monitor, component) {
-		// if (monitor.isOver({ shallow: true })) console.log(props)
-		// if (monitor.isOver({ shallow: true })) console.log(new Date().getTime())
-		return
-
-		const dragIndex = monitor.getItem().index
-		const hoverIndex = props.index
-
-		const dragId = monitor.getItem().id
-		const hoverId = props.id
+		if (!monitor.isOver({ shallow: true })) return
 
 		const dragItem = monitor.getItem()
+		const dragId = monitor.getItem().id
 
-		// Don't replace items with themselves
+		const hoverItem = props
+		const hoverId = props.id
+
+		// don't replace items with themselves
 		if (dragId === hoverId) {
 			return
 		}
 
+		// determine whether item is on left or right side
 		const hoverElementProperties = document.getElementById('logic-element' + props.id).getBoundingClientRect()
 		const centerOfElement = (hoverElementProperties.x + hoverElementProperties.width / 2)
 		const mouseHorizontalPosition = monitor.getClientOffset().x
@@ -58,18 +54,12 @@ const cardTarget = {
 		}
 
 		switch(monitor.getItemType()) {
-			case 'card':
-				// Time to actually perform the action
-				props.moveLogicElement(dragIndex, hoverIndex, leftOrRight)
-
-				// Note: we're mutating the monitor item here!
-				// Generally it's better to avoid mutations,
-				// but it's good here for the sake of performance
-				// to avoid expensive index searches.
-				monitor.getItem().index = hoverIndex
+			case 'singleElement':
+			case 'bracket':
+				props.moveLogicElement(dragId, hoverId, leftOrRight)
 				break;
-			case 'templateItem':
-				props.addAndDragItem(dragItem, hoverIndex, leftOrRight)
+			case 'templateItem': // drag in items from the templates
+				// props.addAndDragItem(dragItem, hoverIndex, leftOrRight)
 				break;
 		}
 
@@ -90,8 +80,10 @@ class Bracket extends Component {
 			connectDragSource,
 			connectDropTarget,
       draggingId,
+      updateDragging,
 			singleElements,
 			moveLogicElement,
+      moveBracket,
 			addAndDragItem,
 		} = this.props
 
@@ -105,7 +97,9 @@ class Bracket extends Component {
 						value={card.value}
 						type={card.type}
             draggingId={draggingId}
+            updateDragging={updateDragging}
 						moveLogicElement={moveLogicElement}
+            moveBracket={moveBracket}
 						addAndDragItem={addAndDragItem}
 					/>
 				))}

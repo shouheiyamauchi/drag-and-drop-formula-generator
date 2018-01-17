@@ -6,12 +6,11 @@ import { DragSource, DropTarget } from 'react-dnd'
 import ItemTypes from './ItemTypes'
 import Bracket from './Bracket'
 
-const cardSource = {
+const logicElementSource = {
 	beginDrag(props) {
 		props.updateDragging(props.id)
 		return {
-			id: props.id,
-			index: props.index,
+			id: props.id
 		}
 	},
 	endDrag(props) {
@@ -19,11 +18,9 @@ const cardSource = {
 	}
 }
 
-const cardTarget = {
+const logicElementTarget = {
 	hover(props, monitor, component) {
 		if (!monitor.isOver({ shallow: true })) return
-		// if (monitor.isOver({ shallow: true })) console.log(new Date().getTime())
-		// return
 
 		const dragItem = monitor.getItem()
 		const dragId = monitor.getItem().id
@@ -51,6 +48,7 @@ const cardTarget = {
 
 		switch(monitor.getItemType()) {
 			case 'singleElement':
+			case 'bracket':
 				props.moveLogicElement(dragId, hoverId, leftOrRight)
 				// monitor.getItem().index = hoverIndex
 				break;
@@ -86,18 +84,19 @@ class LogicElement extends Component {
 			value,
 			type,
 			draggingId,
+			updateDragging,
 			moveLogicElement,
+			moveBracket,
 			addAndDragItem,
 		} = props
 		const opacity = id === draggingId ? 0.5 : 1
 
 		if (type === 'number') {
-			// console.log(props.isDragging)
 			return <div style={{ ...style, opacity }} id={'logic-element' + id}>{value}</div>
 		} else if (type === 'bracket') {
 			return (
 				<div>
-					<Bracket id={id} singleElements={value} draggingId={draggingId} moveLogicElement={moveLogicElement} addAndDragItem={addAndDragItem} />
+					<Bracket id={id} singleElements={value} draggingId={draggingId} updateDragging={updateDragging} moveLogicElement={moveLogicElement} moveBracket={moveBracket} addAndDragItem={addAndDragItem} />
 				</div>
 
 			)
@@ -117,11 +116,11 @@ class LogicElement extends Component {
 }
 
 export default flow(
-  DragSource(ItemTypes.SINGLE_ELEMENT, cardSource, (connect, monitor) => ({
+  DragSource(ItemTypes.SINGLE_ELEMENT, logicElementSource, (connect, monitor) => ({
   	connectDragSource: connect.dragSource(),
   	isDragging: monitor.isDragging(),
   })),
-  DropTarget([ItemTypes.BRACKET, ItemTypes.TEMPLATE_ITEM, ItemTypes.SINGLE_ELEMENT], cardTarget, connect => ({
+  DropTarget([ItemTypes.BRACKET, ItemTypes.TEMPLATE_ITEM, ItemTypes.SINGLE_ELEMENT], logicElementTarget, connect => ({
   	connectDropTarget: connect.dropTarget(),
   }))
 )(LogicElement)
