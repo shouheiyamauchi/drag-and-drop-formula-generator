@@ -25,6 +25,11 @@ class Container extends Component {
     this.state = {
       draggingId: null,
       newId: 16,
+      lastDrag: {
+        dragId: '',
+        hoverId: '',
+        leftOrRight: ''
+      },
       templateItems: [
         {
           value: '+'
@@ -127,10 +132,14 @@ class Container extends Component {
   }
 
   moveLogicElement(dragId, hoverId, leftOrRight, dropTargetType) {
-    const { logicElements } = this.state;
+    // prevent function from executing if same as last drag
+    if (this.state.lastDrag.dragId === dragId && this.state.lastDrag.hoverId === hoverId && this.state.lastDrag.leftOrRight === leftOrRight) return
 
     // cancel if a dragging element is hovering over its own child
     if (this.getSingleElement(dragId).type === 'bracket' && this.hoverIsChildOfDrag(dragId, hoverId, logicElements)) return
+
+    console.log("moveLogicElement")
+    const { logicElements } = this.state;
 
     const parentAndIndexOfDragging = this.getParentArrayAndIndex(dragId, logicElements)
     // clone the parent array to prevent mutating original object
@@ -151,7 +160,16 @@ class Container extends Component {
       hoveringObject.value.splice(insertIndex, 0, draggingObject)
     }
 
-    this.setState({logicElements})
+    const lastDrag = {
+      dragId,
+      hoverId,
+      leftOrRight
+    }
+
+    this.setState({
+      logicElements,
+      lastDrag
+    })
   }
 
   getParentArrayAndIndex(logicElementId, array) {
@@ -181,11 +199,19 @@ class Container extends Component {
   }
 
   addAndDragItem(dragItem, hoverId, leftOrRight, dropTargetType) {
+    const dragId = dragItem.id
+
+    // prevent function from executing if same as last drag
+    if (this.state.lastDrag.dragId === dragId && this.state.lastDrag.hoverId === hoverId && this.state.lastDrag.leftOrRight === leftOrRight) return
+
+    
+    console.log("addAndDragItem")
     const { newId, logicElements, templateItems } = this.state;
 
+
     // redirect to move function if item has already been added to array
-    if (dragItem.id < newId) {
-      this.moveLogicElement(dragItem.id, hoverId, leftOrRight, dropTargetType)
+    if (dragId < newId) {
+      this.moveLogicElement(dragId, hoverId, leftOrRight, dropTargetType)
       return
     }
 
@@ -208,8 +234,15 @@ class Container extends Component {
       hoveringObject.value.splice(insertIndex, 0, newObject)
     }
 
+    const lastDrag = {
+      dragId,
+      hoverId,
+      leftOrRight
+    }
+
     this.setState({
       logicElements,
+      lastDrag,
       newId: this.state.newId + 1
     })
   }
