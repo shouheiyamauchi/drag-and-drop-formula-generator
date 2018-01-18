@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import _ from 'lodash';
 import { DragSource } from 'react-dnd';
 import ItemTypes from '../config/ItemTypes';
 import ItemCss from '../config/ItemCss';
@@ -38,16 +39,9 @@ class TemplateItem extends Component {
 			connectDragSource,
 		} = this.props
 
-		const style = {
-			display: 'flex',
-			alignItems: 'center',
-			border: '1px solid black',
-			borderRadius: '10px',
-			padding: '5px 12px',
-			margin: '3px'
-		}
+		const style = _.clone(ItemCss.templateItemStyle)
 
-		style.backgroundColor = ItemCss[type]
+		style.backgroundColor = ItemCss.backgroundColor[type]
 		if (color) style.backgroundColor = color
 
 		return connectDragSource(

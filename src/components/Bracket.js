@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { DragSource, DropTarget } from 'react-dnd';
 import flow from 'lodash/flow';
 import ItemTypes from '../config/ItemTypes';
+import ItemCss from '../config/ItemCss';
 import LogicElement from './LogicElement';
 
 const bracketSource = {
@@ -54,20 +55,12 @@ class Bracket extends Component {
 
     const opacity = id === draggingId ? 0.5 : 1
 
-    const style = {
-      display: 'flex',
-      flexDirection: 'row',
-      alignItems: 'center',
-      border: '1px dashed transparent',
-      borderRadius: '10px',
-      backgroundColor: 'rgba(0, 0, 0, 0.04)',
-      padding: '2px 5px',
-      margin: '3px 0px'
-    }
+    const style = ItemCss.bracketStyle
 
-    const bracketStyle = {
+    const bracketsCss = {
       fontSize: '20px',
-      padding: '0px 3px'
+      padding: '0px 3px',
+			color: '#888888'
     }
 
 		return (
@@ -75,7 +68,7 @@ class Bracket extends Component {
         {connectDragSource(
     			connectDropTarget(
             <div style={{ ...style, opacity }} id={'rule-builder-id-' + id}>
-              <span style={bracketStyle}>(</span>
+              <span style={bracketsCss}>(</span>
                 {logicElements.map((card, i) => (
                   <LogicElement
                     key={card.id}
@@ -90,7 +83,7 @@ class Bracket extends Component {
                     changeNumber={changeNumber}
                   />
                 ))}
-              <span style={bracketStyle}>)</span>
+              <span style={bracketsCss}>)</span>
             </div>
           ),
     		)}

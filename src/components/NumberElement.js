@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import ItemCss from '../config/ItemCss'
 
 class NumberElement extends Component {
   constructor(props) {
@@ -7,6 +8,11 @@ class NumberElement extends Component {
     this.state = {
       value: this.props.value
     };
+  }
+
+  componentWillReceiveProps(nextProps) {
+    // reset editing value on cancel or selection of another field
+    this.setState({value: nextProps.value});
   }
 
   handleChange = e => {
@@ -19,15 +25,16 @@ class NumberElement extends Component {
         <div>
           <input
             value={this.state.value}
-            size={this.state.value.length > 0 ? this.state.value.length : 1}
+            size={this.state.value.length > 1 ? this.state.value.length : 2}
             onChange={this.handleChange}
+            style={{backgroundColor: ItemCss.backgroundColor.number}}
           />
           <br />
           <div className="text-right">
             <span
               className="glyphicon glyphicon-remove"
               aria-hidden="true"
-              onClick={() => {this.props.changeNumber(null); this.setState({value: this.props.value});}}
+              onClick={() => {this.props.changeNumber(null);}}
             />
             <span
               className="glyphicon glyphicon-ok"

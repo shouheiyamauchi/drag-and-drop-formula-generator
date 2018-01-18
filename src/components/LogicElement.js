@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import _ from 'lodash';
 import flow from 'lodash/flow';
 import { DragSource, DropTarget } from 'react-dnd';
 import ItemTypes from '../config/ItemTypes';
@@ -47,14 +48,7 @@ class LogicElement extends Component {
 	}
 
 	renderObject = props => {
-		const style = {
-			display: 'flex',
-			alignItems: 'center',
-			border: '1px solid black',
-			borderRadius: '10px',
-			padding: '5px 12px',
-			margin: '3px'
-		}
+		const style = _.clone(ItemCss.logicElementStyle);;
 
 		const {
 			draggingId,
@@ -66,12 +60,12 @@ class LogicElement extends Component {
 			moveElement,
 			editingId,
 			changeNumber
-		} = props
+		} = props;
 
-		const opacity = id === draggingId ? 0.5 : 1
+		const opacity = id === draggingId ? 0.5 : 1;
 
-		style.backgroundColor = ItemCss[type]
-		if (color) style.backgroundColor = color
+		style.backgroundColor = ItemCss.backgroundColor[type];
+		if (color) style.backgroundColor = color;
 
 		if (type === 'operator' || type === 'comparison' || type === 'component' || type === 'variable') {
 			return (

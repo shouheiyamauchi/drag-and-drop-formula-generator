@@ -2,7 +2,8 @@ import React, { Component } from 'react';
 import { DragDropContext } from 'react-dnd';
 import HTML5Backend from 'react-dnd-html5-backend';
 // import { default as TouchBackend } from 'react-dnd-touch-backend';
-import $ from "jquery";
+import _ from 'lodash';
+import $ from 'jquery';
 import ItemTypes from '../config/ItemTypes';
 import TemplateItem from '../components/TemplateItem';
 import LogicElement from '../components/LogicElement';
@@ -135,7 +136,7 @@ class DragDropFormula extends Component {
 
     const parentAndIndexOfDragging = this.getParentArrayAndIndex(dragId, logicElements);
     // clone the parent array to prevent mutating original object
-    const draggingObject = JSON.parse(JSON.stringify(parentAndIndexOfDragging.parentArray[parentAndIndexOfDragging.index]));
+    const draggingObject = _.cloneDeep(parentAndIndexOfDragging.parentArray[parentAndIndexOfDragging.index]);
 
     parentAndIndexOfDragging.parentArray.splice(parentAndIndexOfDragging.index, 1);
 
