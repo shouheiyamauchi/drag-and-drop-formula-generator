@@ -1,28 +1,28 @@
-import React, { Component } from 'react'
-import PropTypes from 'prop-types'
-import { DragSource, DropTarget } from 'react-dnd'
-import ItemTypes from './ItemTypes'
-import LogicElement from './LogicElement'
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
+import { DragSource, DropTarget } from 'react-dnd';
+import ItemTypes from './ItemTypes';
+import LogicElement from './LogicElement';
 import flow from 'lodash/flow';
 
 const bracketSource = {
 	beginDrag(props) {
-		props.updateDragging(props.id)
+		props.updateDragging(props.id);
 		return {
 			id: props.id
-		}
+		};
 	},
 	endDrag(props) {
-		props.updateDragging(null)
+		props.updateDragging(null);
 	}
 }
 
 const bracketTarget = {
   hover(props, monitor, component) {
     // prevent executing on parent containers
-		if (!monitor.isOver({ shallow: true })) return
+		if (!monitor.isOver({ shallow: true })) return;
 
-    props.moveElement(props, monitor, ItemTypes.BRACKET)
+    props.moveElement(props, monitor, ItemTypes.BRACKET);
 	}
 }
 
@@ -66,7 +66,8 @@ class Bracket extends Component {
     }
 
     const bracketStyle = {
-      fontSize: '20px'
+      fontSize: '20px',
+      padding: '0px 3px'
     }
 
 		return (
@@ -93,7 +94,7 @@ class Bracket extends Component {
           ),
     		)}
       </div>
-    )
+    );
 	}
 }
 
@@ -104,4 +105,4 @@ export default flow(
   DropTarget([ItemTypes.BRACKET, ItemTypes.TEMPLATE_ITEM, ItemTypes.LOGIC_ELEMENT], bracketTarget, connect => ({
   	connectDropTarget: connect.dropTarget()
   }))
-)(Bracket)
+)(Bracket);

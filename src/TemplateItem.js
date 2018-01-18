@@ -1,18 +1,18 @@
-import React, { Component } from 'react'
-import PropTypes from 'prop-types'
-import { DragSource } from 'react-dnd'
-import ItemTypes from './ItemTypes'
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
+import { DragSource } from 'react-dnd';
+import ItemTypes from './ItemTypes';
 
 const templateItemSource = {
 	beginDrag(props) {
-		props.updateDragging(props.newId)
+		props.updateDragging(props.newId);
 		return {
 			id: props.newId,
 			index: props.index
-		}
+		};
 	},
 	endDrag(props) {
-		props.updateDragging(null)
+		props.updateDragging(null);
 	}
 }
 
@@ -39,10 +39,10 @@ class TemplateItem extends Component {
 
 		return connectDragSource(
 			<div style={{ ...style }}>{value}</div>
-		)
+		);
 	}
 }
 
 export default DragSource(ItemTypes.TEMPLATE_ITEM, templateItemSource, (connect, monitor) => ({
 	connectDragSource: connect.dragSource()
-}))(TemplateItem)
+}))(TemplateItem);

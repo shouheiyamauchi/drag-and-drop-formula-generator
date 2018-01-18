@@ -36,7 +36,7 @@ class NumberElement extends Component {
             />
           </div>
         </div>
-      )
+      );
     } else {
       return <span onClick={() => this.props.changeNumber(this.props.id)}>{this.props.value ? this.props.value : 'Click to Enter Value'}</span>
     }
