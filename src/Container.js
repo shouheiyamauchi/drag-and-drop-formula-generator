@@ -20,7 +20,7 @@ class Container extends Component {
         hoverId: '',
         leftOrRightOverHoverItem: ''
       },
-      templateItems: [
+      basicTemplateItems: [
         {
           type: 'operator',
           value: '+'
@@ -161,7 +161,7 @@ class Container extends Component {
   }
 
   addAndDragItem = (hoverItem, dragItem, dropTargetType, leftOrRightOverHoverItem) => {
-    const { newId, logicElements, templateItems } = this.state;
+    const { newId, logicElements } = this.state;
     const hoverId = hoverItem.id;
     const dragId = dragItem.id;
     const dragIndex = dragItem.index;
@@ -170,20 +170,10 @@ class Container extends Component {
     if (dragId < newId) {
       this.moveLogicElement(hoverItem, dragItem, dropTargetType, leftOrRightOverHoverItem);
       return;
-    }
-
-    const newObjectValue = {
-      number: '',
-      operator: templateItems[dragIndex].value,
-      comparison: templateItems[dragIndex].value,
-      bracket: [],
-    }[templateItems[dragIndex].type];
-
-    const newObject = {
-      id: newId,
-      type: templateItems[dragIndex].type,
-      value: newObjectValue
     };
+
+    const newObject = this.constructNewObject(dragItem.templateItemType, dragIndex);
+    newObject.id = newId;
 
     const parentAndIndexOfHovering = this.getParentArrayAndIndex(hoverId, logicElements);
     const hoveringObject = parentAndIndexOfHovering.parentArray[parentAndIndexOfHovering.index];
@@ -209,6 +199,26 @@ class Container extends Component {
       lastDrag,
       newId: this.state.newId + 1
     });
+  }
+
+  constructNewObject = (templateItemType, dragIndex) => {
+    const { basicTemplateItems } = this.state;
+
+    let newObjectValue = ''
+
+    if (templateItemType === 'basic') {
+      newObjectValue = {
+        number: '',
+        operator: basicTemplateItems[dragIndex].value,
+        comparison: basicTemplateItems[dragIndex].value,
+        bracket: [],
+      }[basicTemplateItems[dragIndex].type];
+    };
+
+    return {
+      type: basicTemplateItems[dragIndex].type,
+      value: newObjectValue
+    };
   }
 
   getParentArrayAndIndex = (logicElementId, array) => {
@@ -254,7 +264,7 @@ class Container extends Component {
 
   render() {
     const {
-      templateItems,
+      basicTemplateItems,
       logicElements,
       newId,
       draggingId,
@@ -271,12 +281,14 @@ class Container extends Component {
     return (
       <div>
         <div style={style}>
-          {templateItems.map((templateItem, i) => (
+          {basicTemplateItems.map((templateItem, i) => (
             <TemplateItem
               index={i}
               key={i}
               newId={newId}
+              type={templateItem.type}
               value={templateItem.value}
+              templateItemType="basic"
               updateDragging={this.updateDragging}
             />
           ))}

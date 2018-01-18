@@ -2,9 +2,10 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import flow from 'lodash/flow';
 import { DragSource, DropTarget } from 'react-dnd';
-import ItemTypes from './ItemTypes';
 import Bracket from './Bracket';
 import NumberElement from './NumberElement';
+import ItemTypes from './ItemTypes';
+import ItemCss from './ItemCss';
 
 const logicElementSource = {
 	beginDrag(props) {
@@ -67,17 +68,9 @@ class LogicElement extends Component {
 
 		const opacity = id === draggingId ? 0.5 : 1
 
-		if (type === 'operator') {
-			style.backgroundColor = 'aqua'
-			return (
-				<div style={{ opacity }} id={'rule-builder-id-' + id}>
-					<div style={style}>
-						{value}
-					</div>
-				</div>
-			);
-		} else if (type === 'comparison') {
-			style.backgroundColor = 'pink'
+		style.backgroundColor = ItemCss[type]
+
+		if (type === 'operator' || type === 'comparison') {
 			return (
 				<div style={{ opacity }} id={'rule-builder-id-' + id}>
 					<div style={style}>
