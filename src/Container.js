@@ -12,8 +12,9 @@ class Container extends Component {
     super(props);
 
     this.state = {
-      draggingId: null,
       newId: 16,
+      draggingId: null,
+      editingId: null,
       lastDrag: {
         dragId: '',
         hoverId: '',
@@ -21,16 +22,24 @@ class Container extends Component {
       },
       templateItems: [
         {
+          type: 'operator',
           value: '+'
         },
         {
+          type: 'operator',
           value: '-'
         },
         {
+          type: 'operator',
           value: '/'
         },
         {
+          type: 'operator',
           value: '*'
+        },
+        {
+          type: 'number',
+          value: 'Number'
         }
       ],
       logicElements: [
@@ -146,9 +155,6 @@ class Container extends Component {
 
     const leftOrRightOverHoverItem = this.mousePositionOverHoverItem(hoverId, monitor)
 
-    // console.log(leftOrRightOverHoverItem)
-    // console.log(hoverId)
-
     // prevent function from executing if same as last drag
     if (this.state.lastDrag.dragId === dragId && this.state.lastDrag.hoverId === hoverId && this.state.lastDrag.leftOrRightOverHoverItem === leftOrRightOverHoverItem) return
 
@@ -218,10 +224,12 @@ class Container extends Component {
       return
     }
 
+    const newObjectValue = templateItems[dragIndex].type === 'number' ? '' : templateItems[dragIndex].value
+
     const newObject = {
       id: newId,
-      type: 'operator',
-      value: templateItems[dragIndex].value
+      type: templateItems[dragIndex].type,
+      value: newObjectValue
     }
 
     const parentAndIndexOfHovering = this.getParentArrayAndIndex(hoverId, logicElements)
@@ -276,11 +284,29 @@ class Container extends Component {
     return this.getParentArrayAndIndex(hoverId, dragArray) !== undefined
   }
 
+  changeNumber = (logicElementId, newValue) => {
+    if (!newValue) {
+      this.setState({ editingId: logicElementId });
+    } else {
+      const { logicElements } = this.state;
+
+      const parentArrayAndIndex = this.getParentArrayAndIndex(logicElementId, logicElements);
+      parentArrayAndIndex.parentArray[parentArrayAndIndex.index].value = newValue;
+
+      this.setState({
+        editingId: null,
+        logicElements
+      });
+    }
+  }
+
   render() {
     const {
       templateItems,
       logicElements,
-      newId
+      newId,
+      draggingId,
+      editingId
     } = this.state
 
     const style = {
@@ -311,8 +337,10 @@ class Container extends Component {
               type={card.type}
               value={card.value}
               moveElement={this.moveElement}
-              draggingId={this.state.draggingId}
+              draggingId={draggingId}
               updateDragging={this.updateDragging}
+              editingId={editingId}
+              changeNumber={this.changeNumber}
             />
           ))}
         </div>

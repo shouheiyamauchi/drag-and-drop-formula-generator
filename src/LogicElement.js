@@ -4,6 +4,7 @@ import flow from 'lodash/flow';
 import { DragSource, DropTarget } from 'react-dnd'
 import ItemTypes from './ItemTypes'
 import Bracket from './Bracket'
+import NumberElement from './NumberElement'
 
 const logicElementSource = {
 	beginDrag(props) {
@@ -38,15 +39,19 @@ class LogicElement extends Component {
 			PropTypes.array
 		]).isRequired,
 		type: PropTypes.string.isRequired,
-		moveElement: PropTypes.func.isRequired
+		moveElement: PropTypes.func.isRequired,
+		editingId: PropTypes.number,
+		changeNumber: PropTypes.func.isRequired
 	}
 
 	renderObject = props => {
 		const style = {
 			display: 'flex',
 			alignItems: 'center',
-			border: '1px solid gray',
-			padding: '10px 15px'
+			border: '1px solid black',
+			borderRadius: '10px',
+			padding: '5px 12px',
+			margin: '3px'
 		}
 
 		const {
@@ -55,13 +60,29 @@ class LogicElement extends Component {
 			id,
 			value,
 			type,
-			moveElement
+			moveElement,
+			editingId,
+			changeNumber
 		} = props
 
 		const opacity = id === draggingId ? 0.5 : 1
 
-		if (type === 'number' || type === 'operator') {
-			return <div style={{ ...style, opacity }} id={'rule-builder-id-' + id}>{value}</div>
+		if (type === 'operator') {
+			return (
+				<div style={{ opacity }} id={'rule-builder-id-' + id}>
+					<div style={style}>
+						{value}
+					</div>
+				</div>
+			)
+		} else if (type === 'number') {
+			return (
+				<div style={{ opacity }} id={'rule-builder-id-' + id}>
+					<div style={style}>
+						<NumberElement id={id} value={value} editingId={editingId} changeNumber={changeNumber} />
+					</div>
+				</div>
+			)
 		} else if (type === 'bracket') {
 			return (
 				<div>
@@ -71,6 +92,8 @@ class LogicElement extends Component {
 						moveElement={moveElement}
 						draggingId={draggingId}
 						updateDragging={updateDragging}
+						editingId={editingId}
+						changeNumber={changeNumber}
 					/>
 				</div>
 
