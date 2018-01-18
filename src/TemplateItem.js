@@ -3,14 +3,7 @@ import PropTypes from 'prop-types'
 import { DragSource } from 'react-dnd'
 import ItemTypes from './ItemTypes'
 
-const style = {
-	border: '1px solid black',
-	padding: '0.5rem 1rem',
-	marginBottom: '.5rem',
-	backgroundColor: 'white'
-}
-
-const templateItem = {
+const templateItemSource = {
 	beginDrag(props) {
 		props.updateDragging(props.newId)
 		return {
@@ -38,12 +31,19 @@ class TemplateItem extends Component {
 			connectDragSource,
 		} = this.props
 
+		const style = {
+			border: '1px solid black',
+			padding: '0.5rem 1rem',
+			marginBottom: '.5rem',
+			backgroundColor: 'white'
+		}
+
 		return connectDragSource(
 			<div style={{ ...style }}>{value}</div>
 		)
 	}
 }
 
-export default DragSource(ItemTypes.TEMPLATE_ITEM, templateItem, (connect, monitor) => ({
+export default DragSource(ItemTypes.TEMPLATE_ITEM, templateItemSource, (connect, monitor) => ({
 	connectDragSource: connect.dragSource()
 }))(TemplateItem)

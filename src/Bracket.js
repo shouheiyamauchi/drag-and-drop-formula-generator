@@ -5,17 +5,6 @@ import ItemTypes from './ItemTypes'
 import LogicElement from './LogicElement'
 import flow from 'lodash/flow';
 
-const style = {
-  display: 'flex',
-  flexDirection: 'row',
-  alignItems: 'center',
-  border: '1px dashed gray',
-  padding: '3px',
-}
-
-const bracketStyle = {
-}
-
 const bracketSource = {
 	beginDrag(props) {
 		props.updateDragging(props.id)
@@ -60,6 +49,17 @@ class Bracket extends Component {
 		} = this.props
 
     const opacity = id === draggingId ? 0.5 : 1
+
+    const style = {
+      display: 'flex',
+      flexDirection: 'row',
+      alignItems: 'center',
+      border: '1px dashed gray',
+      padding: '3px',
+    }
+
+    const bracketStyle = {
+    }
 
 		return connectDragSource(
 			connectDropTarget(<div style={{ ...style, opacity }} id={'rule-builder-id-' + id}>

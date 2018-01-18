@@ -6,13 +6,6 @@ import HTML5Backend from 'react-dnd-html5-backend';
 import TemplateItem from './TemplateItem'
 import LogicElement from './LogicElement'
 
-const style = {
-  display: 'flex',
-  flexDirection: 'row',
-  flexWrap: 'wrap',
-  alignItems: 'center'
-}
-
 class Container extends Component {
   constructor(props) {
     super(props);
@@ -281,7 +274,18 @@ class Container extends Component {
   }
 
   render() {
-    const { templateItems, logicElements, newId } = this.state
+    const {
+      templateItems,
+      logicElements,
+      newId
+    } = this.state
+
+    const style = {
+      display: 'flex',
+      flexDirection: 'row',
+      flexWrap: 'wrap',
+      alignItems: 'center'
+    }
 
     return (
       <div>
