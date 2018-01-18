@@ -73,7 +73,7 @@ class LogicElement extends Component {
 		style.backgroundColor = ItemCss[type]
 		if (color) style.backgroundColor = color
 
-		if (type === 'operator' || type === 'comparison' || type === 'component') {
+		if (type === 'operator' || type === 'comparison' || type === 'component' || type === 'variable') {
 			return (
 				<div style={{ opacity }} id={'rule-builder-id-' + id}>
 					<div style={style}>

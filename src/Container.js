@@ -67,6 +67,7 @@ class Container extends Component {
         }
       ],
       componentTemplateItems: [],
+      variableTemplateItems: [],
       logicElements: []
     }
   }
@@ -75,6 +76,7 @@ class Container extends Component {
     this.setState({
       newId: this.props.values.newId,
       componentTemplateItems: this.props.values.componentTemplateItems,
+      variableTemplateItems: this.props.values.variableTemplateItems,
       logicElements: this.props.values.logicElements
     });
   }
@@ -204,7 +206,7 @@ class Container extends Component {
   }
 
   constructNewObject = (templateItemType, dragIndex) => {
-    const { basicTemplateItems, componentTemplateItems } = this.state;
+    const { basicTemplateItems, componentTemplateItems, variableTemplateItems } = this.state;
 
     let newObjectType = '';
     let newObjectValue = '';
@@ -223,6 +225,10 @@ class Container extends Component {
       newObjectType = componentTemplateItems[dragIndex].type;
       newObjectValue = componentTemplateItems[dragIndex].value;
       newObjectColor = componentTemplateItems[dragIndex].color;
+    } else if (templateItemType === 'variable') {
+      newObjectType = variableTemplateItems[dragIndex].type;
+      newObjectValue = variableTemplateItems[dragIndex].value;
+      newObjectColor = variableTemplateItems[dragIndex].color;
     };
 
     return {
@@ -277,6 +283,7 @@ class Container extends Component {
     const {
       basicTemplateItems,
       componentTemplateItems,
+      variableTemplateItems,
       logicElements,
       newId,
       draggingId,
@@ -315,6 +322,20 @@ class Container extends Component {
               value={templateItem.value}
               color={templateItem.color}
               templateItemType="component"
+              updateDragging={this.updateDragging}
+            />
+          ))}
+        </div>
+        <div style={style}>
+          {variableTemplateItems.map((templateItem, i) => (
+            <TemplateItem
+              index={i}
+              key={i}
+              newId={newId}
+              type={templateItem.type}
+              value={templateItem.value}
+              color={templateItem.color}
+              templateItemType="variable"
               updateDragging={this.updateDragging}
             />
           ))}

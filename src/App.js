@@ -99,6 +99,23 @@ const values = {
       value: 'Component 3',
       color: 'grey'
     }
+  ],
+  variableTemplateItems: [
+    {
+      type: 'variable',
+      value: 'Variable 1',
+      color: 'green'
+    },
+    {
+      type: 'variable',
+      value: 'Variable 2',
+      color: '#fff000'
+    },
+    {
+      type: 'variable',
+      value: 'Variable 3',
+      color: 'white'
+    }
   ]
 }
 
