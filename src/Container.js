@@ -5,6 +5,7 @@ import HTML5Backend from 'react-dnd-html5-backend';
 // import { default as TouchBackend } from 'react-dnd-touch-backend';
 import TemplateItem from './TemplateItem'
 import LogicElement from './LogicElement'
+import $ from "jquery";
 
 class Container extends Component {
   constructor(props) {
@@ -120,8 +121,8 @@ class Container extends Component {
   }
 
   mousePositionOverHoverItem = (hoverId, monitor) => {
-    const hoverElementProperties = document.getElementById('rule-builder-id-' + hoverId).getBoundingClientRect()
-    const centerOfElement = (hoverElementProperties.x + hoverElementProperties.width / 2)
+    const hoverElementProperties = $('#rule-builder-id-' + hoverId)[0].getBoundingClientRect()
+    const centerOfElement = (hoverElementProperties.left + hoverElementProperties.width / 2)
     const mouseHorizontalPosition = monitor.getClientOffset().x
 
     if (mouseHorizontalPosition < centerOfElement) {
@@ -144,6 +145,9 @@ class Container extends Component {
     }
 
     const leftOrRightOverHoverItem = this.mousePositionOverHoverItem(hoverId, monitor)
+
+    // console.log(leftOrRightOverHoverItem)
+    // console.log(hoverId)
 
     // prevent function from executing if same as last drag
     if (this.state.lastDrag.dragId === dragId && this.state.lastDrag.hoverId === hoverId && this.state.lastDrag.leftOrRightOverHoverItem === leftOrRightOverHoverItem) return
@@ -207,7 +211,6 @@ class Container extends Component {
     const dragIndex = dragItem.index
 
     console.log("addAndDragItem")
-
 
     // redirect to move function if item has already been added to array
     if (dragId < newId) {

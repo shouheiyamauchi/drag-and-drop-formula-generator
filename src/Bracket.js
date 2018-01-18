@@ -56,7 +56,7 @@ class Bracket extends Component {
       alignItems: 'center',
       border: '1px dashed gray',
       padding: '5px',
-      margin: '3px'
+      margin: '3px 0px'
     }
 
     const bracketStyle = {

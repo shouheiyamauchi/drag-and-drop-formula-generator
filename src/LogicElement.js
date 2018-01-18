@@ -46,8 +46,7 @@ class LogicElement extends Component {
 			display: 'flex',
 			alignItems: 'center',
 			border: '1px solid gray',
-			padding: '10px 15px',
-      margin: '3px'
+			padding: '10px 15px'
 		}
 
 		const {
