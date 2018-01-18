@@ -62,7 +62,7 @@ class Bracket extends Component {
     const bracketsCss = {
       fontSize: '20px',
       padding: '0px 3px',
-			color: '#888888'
+			color: '#666666'
     }
 
 		return (
