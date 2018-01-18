@@ -33,9 +33,8 @@ class TemplateItem extends Component {
 
 		const style = {
 			border: '1px solid black',
-			padding: '0.5rem 1rem',
-			marginBottom: '.5rem',
-			backgroundColor: 'white'
+			padding: '10px 15px',
+			margin: '3px'
 		}
 
 		return connectDragSource(

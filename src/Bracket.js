@@ -55,7 +55,8 @@ class Bracket extends Component {
       flexDirection: 'row',
       alignItems: 'center',
       border: '1px dashed gray',
-      padding: '3px',
+      padding: '5px',
+      margin: '3px'
     }
 
     const bracketStyle = {
