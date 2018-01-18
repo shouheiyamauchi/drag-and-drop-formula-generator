@@ -2,10 +2,10 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import flow from 'lodash/flow';
 import { DragSource, DropTarget } from 'react-dnd';
+import ItemTypes from '../config/ItemTypes';
+import ItemCss from '../config/ItemCss';
 import Bracket from './Bracket';
 import NumberElement from './NumberElement';
-import ItemTypes from './ItemTypes';
-import ItemCss from './ItemCss';
 
 const logicElementSource = {
 	beginDrag(props) {

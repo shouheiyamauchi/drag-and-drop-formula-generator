@@ -1,13 +1,13 @@
 import React, { Component } from 'react';
 import { DragDropContext } from 'react-dnd';
-import ItemTypes from './ItemTypes';
 import HTML5Backend from 'react-dnd-html5-backend';
 // import { default as TouchBackend } from 'react-dnd-touch-backend';
-import TemplateItem from './TemplateItem';
-import LogicElement from './LogicElement';
 import $ from "jquery";
+import ItemTypes from '../config/ItemTypes';
+import TemplateItem from '../components/TemplateItem';
+import LogicElement from '../components/LogicElement';
 
-class Container extends Component {
+class DragDropFormula extends Component {
   constructor(props) {
     super(props);
 
@@ -362,5 +362,5 @@ class Container extends Component {
   }
 }
 
-export default DragDropContext(HTML5Backend)(Container);
-// export default DragDropContext(TouchBackend)(Container);
+export default DragDropContext(HTML5Backend)(DragDropFormula);
+// export default DragDropContext(TouchBackend)(DragDropFormula);

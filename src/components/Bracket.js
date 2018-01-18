@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { DragSource, DropTarget } from 'react-dnd';
-import ItemTypes from './ItemTypes';
-import LogicElement from './LogicElement';
 import flow from 'lodash/flow';
+import ItemTypes from '../config/ItemTypes';
+import LogicElement from './LogicElement';
 
 const bracketSource = {
 	beginDrag(props) {

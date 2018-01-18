@@ -1,5 +1,5 @@
 import React from 'react';
-import Container from './Container';
+import DragDropFormula from './containers/DragDropFormula';
 
 const values = {
   newId: 16,
@@ -121,7 +121,7 @@ const values = {
 
 const App = props => {
   return (
-    <Container values={values} />
+    <DragDropFormula values={values} />
   )
 }
 
