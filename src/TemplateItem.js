@@ -26,6 +26,7 @@ class TemplateItem extends Component {
 		newId: PropTypes.number.isRequired,
 		type: PropTypes.string.isRequired,
 		value: PropTypes.string.isRequired,
+		color: PropTypes.string,
 		templateItemType: PropTypes.string.isRequired
 	}
 
@@ -33,16 +34,21 @@ class TemplateItem extends Component {
 		const {
 			type,
 			value,
+			color,
 			connectDragSource,
 		} = this.props
 
 		const style = {
+			display: 'flex',
+			alignItems: 'center',
 			border: '1px solid black',
-			padding: '10px 15px',
+			borderRadius: '10px',
+			padding: '5px 12px',
 			margin: '3px'
 		}
 
 		style.backgroundColor = ItemCss[type]
+		if (color) style.backgroundColor = color
 
 		return connectDragSource(
 			<div style={{ ...style }}>{value}</div>

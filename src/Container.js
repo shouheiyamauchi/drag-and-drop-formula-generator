@@ -66,6 +66,7 @@ class Container extends Component {
           value: '( )'
         }
       ],
+      componentTemplateItems: [],
       logicElements: []
     }
   }
@@ -73,6 +74,7 @@ class Container extends Component {
   componentDidMount() {
     this.setState({
       newId: this.props.values.newId,
+      componentTemplateItems: this.props.values.componentTemplateItems,
       logicElements: this.props.values.logicElements
     });
   }
@@ -202,22 +204,31 @@ class Container extends Component {
   }
 
   constructNewObject = (templateItemType, dragIndex) => {
-    const { basicTemplateItems } = this.state;
+    const { basicTemplateItems, componentTemplateItems } = this.state;
 
-    let newObjectValue = ''
+    let newObjectType = '';
+    let newObjectValue = '';
+    let newObjectColor = '';
 
     if (templateItemType === 'basic') {
+      newObjectType = basicTemplateItems[dragIndex].type;
+
       newObjectValue = {
         number: '',
         operator: basicTemplateItems[dragIndex].value,
         comparison: basicTemplateItems[dragIndex].value,
         bracket: [],
       }[basicTemplateItems[dragIndex].type];
+    } else if (templateItemType === 'component') {
+      newObjectType = componentTemplateItems[dragIndex].type;
+      newObjectValue = componentTemplateItems[dragIndex].value;
+      newObjectColor = componentTemplateItems[dragIndex].color;
     };
 
     return {
-      type: basicTemplateItems[dragIndex].type,
-      value: newObjectValue
+      type: newObjectType,
+      value: newObjectValue,
+      color: newObjectColor
     };
   }
 
@@ -265,6 +276,7 @@ class Container extends Component {
   render() {
     const {
       basicTemplateItems,
+      componentTemplateItems,
       logicElements,
       newId,
       draggingId,
@@ -294,12 +306,28 @@ class Container extends Component {
           ))}
         </div>
         <div style={style}>
+          {componentTemplateItems.map((templateItem, i) => (
+            <TemplateItem
+              index={i}
+              key={i}
+              newId={newId}
+              type={templateItem.type}
+              value={templateItem.value}
+              color={templateItem.color}
+              templateItemType="component"
+              updateDragging={this.updateDragging}
+            />
+          ))}
+        </div>
+        <hr />
+        <div style={style}>
           {logicElements.map((card, i) => (
             <LogicElement
               key={card.id}
               id={card.id}
               type={card.type}
               value={card.value}
+              color={card.color}
               moveElement={this.moveElement}
               draggingId={draggingId}
               updateDragging={this.updateDragging}

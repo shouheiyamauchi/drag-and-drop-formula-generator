@@ -82,6 +82,23 @@ const values = {
       type: 'number',
       value: '7'
     },
+  ],
+  componentTemplateItems: [
+    {
+      type: 'component',
+      value: 'Component 1',
+      color: 'brown'
+    },
+    {
+      type: 'component',
+      value: 'Component 2',
+      color: 'orange'
+    },
+    {
+      type: 'component',
+      value: 'Component 3',
+      color: 'grey'
+    }
   ]
 }
 

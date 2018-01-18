@@ -82,6 +82,7 @@ class Bracket extends Component {
                     id={card.id}
                     value={card.value}
                     type={card.type}
+										color={card.color}
                     draggingId={draggingId}
                     moveElement={moveElement}
                     updateDragging={updateDragging}

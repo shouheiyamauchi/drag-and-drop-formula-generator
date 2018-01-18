@@ -35,11 +35,12 @@ class LogicElement extends Component {
 		draggingId: PropTypes.number,
     updateDragging: PropTypes.func.isRequired,
 		id: PropTypes.number.isRequired,
+		type: PropTypes.string.isRequired,
 		value: PropTypes.oneOfType([
 			PropTypes.string,
 			PropTypes.array
 		]).isRequired,
-		type: PropTypes.string.isRequired,
+		color: PropTypes.string,
 		moveElement: PropTypes.func.isRequired,
 		editingId: PropTypes.number,
 		changeNumber: PropTypes.func.isRequired
@@ -59,8 +60,9 @@ class LogicElement extends Component {
 			draggingId,
 			updateDragging,
 			id,
-			value,
 			type,
+			value,
+			color,
 			moveElement,
 			editingId,
 			changeNumber
@@ -69,8 +71,9 @@ class LogicElement extends Component {
 		const opacity = id === draggingId ? 0.5 : 1
 
 		style.backgroundColor = ItemCss[type]
+		if (color) style.backgroundColor = color
 
-		if (type === 'operator' || type === 'comparison') {
+		if (type === 'operator' || type === 'comparison' || type === 'component') {
 			return (
 				<div style={{ opacity }} id={'rule-builder-id-' + id}>
 					<div style={style}>
