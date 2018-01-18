@@ -4,6 +4,7 @@ import HTML5Backend from 'react-dnd-html5-backend';
 // import { default as TouchBackend } from 'react-dnd-touch-backend';
 import _ from 'lodash';
 import $ from 'jquery';
+import * as Typicons from 'react-icons/lib/ti'
 import ItemTypes from '../config/ItemTypes';
 import TemplateItem from '../components/TemplateItem';
 import LogicElement from '../components/LogicElement';
@@ -32,11 +33,11 @@ class DragDropFormula extends Component {
         },
         {
           type: 'operator',
-          value: '/'
+          value: '*'
         },
         {
           type: 'operator',
-          value: '*'
+          value: '/'
         },
         {
           type: 'comparison',
@@ -280,6 +281,22 @@ class DragDropFormula extends Component {
     };
   }
 
+  renderIcon = value => {
+		const icons = {
+	    '+': <div><Typicons.TiPlus /></div>,
+	    '-': <div><Typicons.TiMinus /></div>,
+	    '*': <div><Typicons.TiTimes /></div>,
+	    '/': <div><Typicons.TiDivide /></div>,
+	    '<': <div><Typicons.TiChevronLeft /></div>,
+	    '>': <div><Typicons.TiChevronRight /></div>,
+	    '<=': <div><Typicons.TiChevronLeft style={{marginRight: '-3px'}} /><Typicons.TiEquals /></div>,
+	    '>=': <div><Typicons.TiChevronRight style={{marginRight: '-3px'}} /><Typicons.TiEquals /></div>,
+	    '=': <div><Typicons.TiEquals /></div>,
+	  };
+
+		return icons[value] ? icons[value] : value;
+	}
+
   render() {
     const {
       basicTemplateItems,
@@ -310,6 +327,7 @@ class DragDropFormula extends Component {
               value={templateItem.value}
               templateItemType="basic"
               updateDragging={this.updateDragging}
+              renderIcon={this.renderIcon}
             />
           ))}
         </div>
@@ -324,6 +342,7 @@ class DragDropFormula extends Component {
               color={templateItem.color}
               templateItemType="component"
               updateDragging={this.updateDragging}
+              renderIcon={this.renderIcon}
             />
           ))}
         </div>
@@ -338,6 +357,7 @@ class DragDropFormula extends Component {
               color={templateItem.color}
               templateItemType="variable"
               updateDragging={this.updateDragging}
+              renderIcon={this.renderIcon}
             />
           ))}
         </div>
@@ -355,6 +375,7 @@ class DragDropFormula extends Component {
               updateDragging={this.updateDragging}
               editingId={editingId}
               changeNumber={this.changeNumber}
+              renderIcon={this.renderIcon}
             />
           ))}
         </div>

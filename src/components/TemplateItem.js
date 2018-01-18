@@ -28,15 +28,17 @@ class TemplateItem extends Component {
 		type: PropTypes.string.isRequired,
 		value: PropTypes.string.isRequired,
 		color: PropTypes.string,
-		templateItemType: PropTypes.string.isRequired
+		templateItemType: PropTypes.string.isRequired,
+		renderIcon: PropTypes.func.isRequired
 	}
 
 	render() {
 		const {
+			connectDragSource,
 			type,
 			value,
 			color,
-			connectDragSource,
+			renderIcon
 		} = this.props
 
 		const style = _.clone(ItemCss.templateItemStyle)
@@ -45,7 +47,7 @@ class TemplateItem extends Component {
 		if (color) style.backgroundColor = color
 
 		return connectDragSource(
-			<div style={{ ...style }}>{value}</div>
+			<div style={{ ...style }}>{renderIcon(value)}</div>
 		);
 	}
 }

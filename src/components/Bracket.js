@@ -37,7 +37,8 @@ class Bracket extends Component {
     logicElements: PropTypes.array.isRequired,
     moveElement: PropTypes.func.isRequired,
 		editingId: PropTypes.number,
-		changeNumber: PropTypes.func.isRequired
+		changeNumber: PropTypes.func.isRequired,
+		renderIcon: PropTypes.func.isRequired
 	}
 
 	render() {
@@ -50,7 +51,8 @@ class Bracket extends Component {
 			logicElements,
       moveElement,
       editingId,
-      changeNumber
+      changeNumber,
+			renderIcon
 		} = this.props
 
     const opacity = id === draggingId ? 0.5 : 1
@@ -81,6 +83,7 @@ class Bracket extends Component {
                     updateDragging={updateDragging}
                     editingId={editingId}
                     changeNumber={changeNumber}
+										renderIcon={renderIcon}
                   />
                 ))}
               <span style={bracketsCss}>)</span>

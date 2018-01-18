@@ -44,7 +44,8 @@ class LogicElement extends Component {
 		color: PropTypes.string,
 		moveElement: PropTypes.func.isRequired,
 		editingId: PropTypes.number,
-		changeNumber: PropTypes.func.isRequired
+		changeNumber: PropTypes.func.isRequired,
+		renderIcon: PropTypes.func.isRequired
 	}
 
 	renderObject = props => {
@@ -59,7 +60,8 @@ class LogicElement extends Component {
 			color,
 			moveElement,
 			editingId,
-			changeNumber
+			changeNumber,
+			renderIcon
 		} = props;
 
 		const opacity = id === draggingId ? 0.5 : 1;
@@ -71,7 +73,7 @@ class LogicElement extends Component {
 			return (
 				<div style={{ opacity }} id={'rule-builder-id-' + id}>
 					<div style={style}>
-						{value}
+						{renderIcon(value)}
 					</div>
 				</div>
 			);
@@ -94,6 +96,7 @@ class LogicElement extends Component {
 						updateDragging={updateDragging}
 						editingId={editingId}
 						changeNumber={changeNumber}
+						renderIcon={renderIcon}
 					/>
 				</div>
 			);
