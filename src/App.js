@@ -54,34 +54,28 @@ const values = {
   ],
   componentTemplateItems: {
     1: {
-      type: 'component',
       value: '@Component 1',
       color: 'brown'
     },
     2: {
-      type: 'component',
       value: '@Component 2',
       color: 'orange'
     },
     3: {
-      type: 'component',
       value: '@Component 3',
       color: 'grey'
     }
   },
   variableTemplateItems: {
     1: {
-      type: 'variable',
       value: '#Variable 1',
       color: 'green'
     },
     2: {
-      type: 'variable',
       value: '#Variable 2',
       color: '#fff000'
     },
     3: {
-      type: 'variable',
       value: '#Variable 3',
       color: 'white'
     }

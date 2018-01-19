@@ -75,18 +75,18 @@ class DragDropFormula extends Component {
   }
 
   componentDidMount() {
-    const logicElementsAndId = this.assignIdAndTypetoLogicElements(this.props.values.logicElements, 0)
+    this.setAllVariablesFormulas();
+  }
+
+  setAllVariablesFormulas = () => {
+    const logicElementsAndId = this.assignIdAndTypetoLogicElements(this.props.values.logicElements, 0);
 
     this.setState({
       newId: logicElementsAndId.currentId,
-      componentTemplateItems: this.props.values.componentTemplateItems,
-      variableTemplateItems: this.props.values.variableTemplateItems,
+      componentTemplateItems: this.assignComponentVariableTypes(this.props.values.componentTemplateItems, 'component'),
+      variableTemplateItems: this.assignComponentVariableTypes(this.props.values.variableTemplateItems, 'variable'),
       logicElements: logicElementsAndId.logicElementsArray
     });
-  }
-
-  updateDragging = id => {
-    this.setState({draggingId: id});
   }
 
   assignIdAndTypetoLogicElements = (logicElementsArray, startingId) => {
@@ -108,8 +108,14 @@ class DragDropFormula extends Component {
     };
   }
 
-  assignComponentVariableTypes = () => {
+  assignComponentVariableTypes = (componentsOrVariablesObject, typeString) => {
+    const keys = Object.keys(componentsOrVariablesObject);
 
+    for (let i = 0; i < keys.length; i++) {
+      componentsOrVariablesObject[keys[i]].type = typeString
+    };
+
+    return componentsOrVariablesObject;
   }
 
   getElementType = logicElementValue => {
@@ -124,16 +130,8 @@ class DragDropFormula extends Component {
     };
   }
 
-  mousePositionOverHoverItem = (hoverId, monitor) => {
-    const hoverElementProperties = $('#rule-builder-id-' + hoverId)[0].getBoundingClientRect();
-    const centerOfElement = (hoverElementProperties.left + hoverElementProperties.width / 2);
-    const mouseHorizontalPosition = monitor.getClientOffset().x;
-
-    if (mouseHorizontalPosition < centerOfElement) {
-      return 'left';
-    } else if (mouseHorizontalPosition > centerOfElement) {
-      return "right";
-    };
+  updateDragging = id => {
+    this.setState({draggingId: id});
   }
 
   moveElement = (props, monitor, dropTargetType) => {
@@ -162,6 +160,18 @@ class DragDropFormula extends Component {
     };
 
     functionList[draggingItemType](hoverItem, dragItem, dropTargetType, leftOrRightOverHoverItem);
+  }
+
+  mousePositionOverHoverItem = (hoverId, monitor) => {
+    const hoverElementProperties = $('#rule-builder-id-' + hoverId)[0].getBoundingClientRect();
+    const centerOfElement = (hoverElementProperties.left + hoverElementProperties.width / 2);
+    const mouseHorizontalPosition = monitor.getClientOffset().x;
+
+    if (mouseHorizontalPosition < centerOfElement) {
+      return 'left';
+    } else if (mouseHorizontalPosition > centerOfElement) {
+      return "right";
+    };
   }
 
   moveLogicElement = (hoverItem, dragItem, dropTargetType, leftOrRightOverHoverItem) => {
