@@ -46,11 +46,12 @@ class LogicElement extends Component {
 		moveElement: PropTypes.func.isRequired,
 		editingId: PropTypes.number,
 		changeNumber: PropTypes.func.isRequired,
-		renderIcon: PropTypes.func.isRequired
+		renderIcon: PropTypes.func.isRequired,
+		getElementType: PropTypes.func.isRequired
 	}
 
 	renderObject = props => {
-		const style = _.clone(ItemCss.logicElementStyle);;
+		const style = _.clone(ItemCss.logicElementStyle);
 
 		const {
 			draggingId,
@@ -63,7 +64,8 @@ class LogicElement extends Component {
 			moveElement,
 			editingId,
 			changeNumber,
-			renderIcon
+			renderIcon,
+			getElementType
 		} = props;
 
 		const opacity = id === draggingId ? 0.5 : 1;
@@ -79,20 +81,20 @@ class LogicElement extends Component {
 				</div>
 			);
 		} else if (type === 'component') {
-			style.backgroundColor = componentTemplateItems[value].color
+			style.backgroundColor = componentTemplateItems[value.substr(1)].color
 			return (
 				<div style={{ opacity }} id={'rule-builder-id-' + id}>
 					<div style={style}>
-						{componentTemplateItems[value].value}
+						{componentTemplateItems[value.substr(1)].value}
 					</div>
 				</div>
 			);
 		} else if (type === 'variable') {
-			style.backgroundColor = variableTemplateItems[value].color
+			style.backgroundColor = variableTemplateItems[value.substr(1)].color
 			return (
 				<div style={{ opacity }} id={'rule-builder-id-' + id}>
 					<div style={style}>
-						{variableTemplateItems[value].value}
+						{variableTemplateItems[value.substr(1)].value}
 					</div>
 				</div>
 			);
@@ -118,6 +120,7 @@ class LogicElement extends Component {
 						editingId={editingId}
 						changeNumber={changeNumber}
 						renderIcon={renderIcon}
+						getElementType={getElementType}
 					/>
 				</div>
 			);

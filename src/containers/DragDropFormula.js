@@ -94,15 +94,13 @@ class DragDropFormula extends Component {
 
     for (let i = 0; i < logicElementsArray.length; i++) {
       const logicElementValue = logicElementsArray[i];
-      const logicElementType = this.getElementType(logicElementValue);
 
       logicElementsArray[i] = {};
       logicElementsArray[i].id = currentId;
-      logicElementsArray[i].type = logicElementType
-      logicElementsArray[i].value = (logicElementType === 'component' || logicElementType === 'variable') ? logicElementValue.substr(1) : logicElementValue;
+      logicElementsArray[i].value = logicElementValue;
       currentId++;
 
-      if (logicElementType === 'bracket') {
+      if (logicElementValue.constructor === Array) {
         currentId = this.assignIdAndTypetoLogicElements(logicElementsArray[i].value, currentId).currentId;
       };
     };
@@ -266,7 +264,6 @@ class DragDropFormula extends Component {
 
     let newObjectType = '';
     let newObjectValue = '';
-    let newObjectColor = '';
 
     if (templateItemType === 'basic') {
       newObjectType = basicTemplateItems[dragIndex].type;
@@ -279,10 +276,10 @@ class DragDropFormula extends Component {
       }[basicTemplateItems[dragIndex].type];
     } else if (templateItemType === 'component') {
       newObjectType = componentTemplateItems[dragIndex].type;
-      newObjectValue = dragIndex;
+      newObjectValue = '@' + dragIndex;
     } else if (templateItemType === 'variable') {
       newObjectType = variableTemplateItems[dragIndex].type;
-      newObjectValue = dragIndex;
+      newObjectValue = '#' + dragIndex;
     };
 
     return {
@@ -418,7 +415,7 @@ class DragDropFormula extends Component {
             <LogicElement
               key={card.id}
               id={card.id}
-              type={card.type}
+              type={this.getElementType(card.value)}
               value={card.value}
               componentTemplateItems={componentTemplateItems}
               variableTemplateItems={variableTemplateItems}
@@ -428,6 +425,7 @@ class DragDropFormula extends Component {
               editingId={editingId}
               changeNumber={this.changeNumber}
               renderIcon={this.renderIcon}
+              getElementType={this.getElementType}
             />
           ))}
         </div>

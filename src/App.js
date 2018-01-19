@@ -2,56 +2,6 @@ import React from 'react';
 import DragDropFormula from './containers/DragDropFormula';
 
 const values = {
-  // logicElements: [
-  //   {
-  //     value: '1'
-  //   },
-  //   {
-  //     value: '2'
-  //   },
-  //   {
-  //     value: [
-  //       {
-  //         value: '8'
-  //       },
-  //       {
-  //         value: '9'
-  //       },
-  //       {
-  //         value: [
-  //           {
-  //             value: '11'
-  //           },
-  //           {
-  //             value: '12'
-  //           },
-  //         ],
-  //       },
-  //     ]
-  //   },
-  //   {
-  //     value: '4'
-  //   },
-  //   {
-  //     value: '5'
-  //   },
-  //   {
-  //     value: '6'
-  //   },
-  //   {
-  //     value: [
-  //       {
-  //         value: '14'
-  //       },
-  //       {
-  //         value: '15'
-  //       }
-  //     ]
-  //   },
-  //   {
-  //     value: '7'
-  //   },
-  // ],
   logicElements: [
     '1', '+', '2', '*', ['1', '8', '*', [['9000']], '+', '@1', '+', '@2', '#2']
   ],

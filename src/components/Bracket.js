@@ -56,7 +56,8 @@ class Bracket extends Component {
       moveElement,
       editingId,
       changeNumber,
-			renderIcon
+			renderIcon,
+			getElementType
 		} = this.props
 
     const opacity = id === draggingId ? 0.5 : 1
@@ -80,7 +81,7 @@ class Bracket extends Component {
                     key={card.id}
                     id={card.id}
                     value={card.value}
-                    type={card.type}
+                    type={getElementType(card.value)}
 										color={card.color}
 										componentTemplateItems={componentTemplateItems}
 			              variableTemplateItems={variableTemplateItems}
@@ -90,6 +91,7 @@ class Bracket extends Component {
                     editingId={editingId}
                     changeNumber={changeNumber}
 										renderIcon={renderIcon}
+										getElementType={getElementType}
                   />
                 ))}
               <span style={bracketsCss}>)</span>
