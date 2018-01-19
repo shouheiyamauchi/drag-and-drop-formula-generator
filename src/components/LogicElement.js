@@ -42,6 +42,8 @@ class LogicElement extends Component {
 			PropTypes.array
 		]).isRequired,
 		color: PropTypes.string,
+		componentTemplateItems: PropTypes.object.isRequired,
+		variableTemplateItems: PropTypes.object.isRequired,
 		moveElement: PropTypes.func.isRequired,
 		editingId: PropTypes.number,
 		changeNumber: PropTypes.func.isRequired,
@@ -58,6 +60,8 @@ class LogicElement extends Component {
 			type,
 			value,
 			color,
+      componentTemplateItems,
+      variableTemplateItems,
 			moveElement,
 			editingId,
 			changeNumber,
@@ -69,11 +73,27 @@ class LogicElement extends Component {
 		style.backgroundColor = ItemCss.backgroundColor[type];
 		if (color) style.backgroundColor = color;
 
-		if (type === 'operator' || type === 'comparison' || type === 'component' || type === 'variable') {
+		if (type === 'operator' || type === 'comparison') {
 			return (
 				<div style={{ opacity }} id={'rule-builder-id-' + id}>
 					<div style={style}>
 						{renderIcon(value)}
+					</div>
+				</div>
+			);
+		} else if (type === 'component') {
+			return (
+				<div style={{ opacity }} id={'rule-builder-id-' + id}>
+					<div style={style}>
+						{componentTemplateItems[value].value.substr(1)}
+					</div>
+				</div>
+			);
+		} else if (type === 'variable') {
+			return (
+				<div style={{ opacity }} id={'rule-builder-id-' + id}>
+					<div style={style}>
+						{variableTemplateItems[value].value.substr(1)}
 					</div>
 				</div>
 			);
@@ -91,6 +111,8 @@ class LogicElement extends Component {
 					<Bracket
 						id={id}
 						logicElements={value}
+						componentTemplateItems={componentTemplateItems}
+						variableTemplateItems={variableTemplateItems}
 						moveElement={moveElement}
 						draggingId={draggingId}
 						updateDragging={updateDragging}

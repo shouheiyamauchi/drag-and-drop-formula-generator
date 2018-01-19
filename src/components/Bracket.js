@@ -35,6 +35,8 @@ class Bracket extends Component {
     updateDragging: PropTypes.func.isRequired,
     id: PropTypes.number.isRequired,
     logicElements: PropTypes.array.isRequired,
+		componentTemplateItems: PropTypes.object.isRequired,
+		variableTemplateItems: PropTypes.object.isRequired,
     moveElement: PropTypes.func.isRequired,
 		editingId: PropTypes.number,
 		changeNumber: PropTypes.func.isRequired,
@@ -49,6 +51,8 @@ class Bracket extends Component {
       updateDragging,
   		id,
 			logicElements,
+      componentTemplateItems,
+      variableTemplateItems,
       moveElement,
       editingId,
       changeNumber,
@@ -78,8 +82,10 @@ class Bracket extends Component {
                     value={card.value}
                     type={card.type}
 										color={card.color}
-                    draggingId={draggingId}
+										componentTemplateItems={componentTemplateItems}
+			              variableTemplateItems={variableTemplateItems}
                     moveElement={moveElement}
+                    draggingId={draggingId}
                     updateDragging={updateDragging}
                     editingId={editingId}
                     changeNumber={changeNumber}

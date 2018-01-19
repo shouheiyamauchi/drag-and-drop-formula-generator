@@ -23,7 +23,10 @@ class TemplateItem extends Component {
 	static propTypes = {
 		connectDragSource: PropTypes.func.isRequired,
     updateDragging: PropTypes.func.isRequired,
-		index: PropTypes.number.isRequired,
+		index: PropTypes.oneOfType([
+			PropTypes.number,
+			PropTypes.string
+		]).isRequired,
 		newId: PropTypes.number.isRequired,
 		type: PropTypes.string.isRequired,
 		value: PropTypes.string.isRequired,
@@ -47,7 +50,11 @@ class TemplateItem extends Component {
 		if (color) style.backgroundColor = color
 
 		return connectDragSource(
-			<div style={{ ...style }}>{renderIcon(value)}</div>
+			(type === 'component' || type === 'variable') ? (
+				<div style={{ ...style }}>{value.substr(1)}</div>
+			) : (
+				<div style={{ ...style }}>{renderIcon(value)}</div>
+			)
 		);
 	}
 }

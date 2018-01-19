@@ -14,7 +14,7 @@ class DragDropFormula extends Component {
     super(props);
 
     this.state = {
-      newId: 1,
+      newId: 0,
       draggingId: null,
       editingId: null,
       lastDrag: {
@@ -68,23 +68,60 @@ class DragDropFormula extends Component {
           value: '( )'
         }
       ],
-      componentTemplateItems: [],
-      variableTemplateItems: [],
+      componentTemplateItems: {},
+      variableTemplateItems: {},
       logicElements: []
     }
   }
 
   componentDidMount() {
+    const logicElementsAndId = this.assignIdAndTypetoLogicElements(this.props.values.logicElements, 0)
+
     this.setState({
-      newId: this.props.values.newId,
+      newId: logicElementsAndId.currentId,
       componentTemplateItems: this.props.values.componentTemplateItems,
       variableTemplateItems: this.props.values.variableTemplateItems,
-      logicElements: this.props.values.logicElements
+      logicElements: logicElementsAndId.logicElementsArray
     });
   }
 
   updateDragging = id => {
     this.setState({draggingId: id});
+  }
+
+  assignIdAndTypetoLogicElements = (logicElementsArray, startingId) => {
+    let currentId = startingId;
+
+    for (let i = 0; i < logicElementsArray.length; i++) {
+      logicElementsArray[i].id = currentId;
+      logicElementsArray[i].type = this.getElementType(logicElementsArray[i].value);
+      currentId++;
+
+      if (logicElementsArray[i].value.constructor === Array) {
+        currentId = this.assignIdAndTypetoLogicElements(logicElementsArray[i].value, currentId).currentId;
+      };
+    };
+
+    return {
+      logicElementsArray,
+      currentId
+    };
+  }
+
+  assignComponentVariableTypes = () => {
+
+  }
+
+  getElementType = logicElementValue => {
+    if (logicElementValue.constructor === Array) {
+      return 'bracket'
+    } else if (logicElementValue[0] === '@') {
+      return 'component'
+    } else if (logicElementValue[0] === '#') {
+      return 'variable'
+    } else {
+      return 'number'
+    };
   }
 
   mousePositionOverHoverItem = (hoverId, monitor) => {
@@ -224,12 +261,13 @@ class DragDropFormula extends Component {
         bracket: [],
       }[basicTemplateItems[dragIndex].type];
     } else if (templateItemType === 'component') {
+      console.log(dragIndex)
       newObjectType = componentTemplateItems[dragIndex].type;
-      newObjectValue = componentTemplateItems[dragIndex].value;
+      newObjectValue = dragIndex;
       newObjectColor = componentTemplateItems[dragIndex].color;
     } else if (templateItemType === 'variable') {
       newObjectType = variableTemplateItems[dragIndex].type;
-      newObjectValue = variableTemplateItems[dragIndex].value;
+      newObjectValue = dragIndex;
       newObjectColor = variableTemplateItems[dragIndex].color;
     };
 
@@ -300,9 +338,9 @@ class DragDropFormula extends Component {
   render() {
     const {
       basicTemplateItems,
+      logicElements,
       componentTemplateItems,
       variableTemplateItems,
-      logicElements,
       newId,
       draggingId,
       editingId
@@ -332,14 +370,14 @@ class DragDropFormula extends Component {
           ))}
         </div>
         <div style={style}>
-          {componentTemplateItems.map((templateItem, i) => (
+          {Object.keys(componentTemplateItems).map((key, i) => (
             <TemplateItem
-              index={i}
+              index={key}
               key={i}
               newId={newId}
-              type={templateItem.type}
-              value={templateItem.value}
-              color={templateItem.color}
+              type={componentTemplateItems[key].type}
+              value={componentTemplateItems[key].value}
+              color={componentTemplateItems[key].color}
               templateItemType="component"
               updateDragging={this.updateDragging}
               renderIcon={this.renderIcon}
@@ -347,14 +385,14 @@ class DragDropFormula extends Component {
           ))}
         </div>
         <div style={style}>
-          {variableTemplateItems.map((templateItem, i) => (
+          {Object.keys(variableTemplateItems).map((key, i) => (
             <TemplateItem
-              index={i}
+              index={key}
               key={i}
               newId={newId}
-              type={templateItem.type}
-              value={templateItem.value}
-              color={templateItem.color}
+              type={variableTemplateItems[key].type}
+              value={variableTemplateItems[key].value}
+              color={variableTemplateItems[key].color}
               templateItemType="variable"
               updateDragging={this.updateDragging}
               renderIcon={this.renderIcon}
@@ -370,6 +408,8 @@ class DragDropFormula extends Component {
               type={card.type}
               value={card.value}
               color={card.color}
+              componentTemplateItems={componentTemplateItems}
+              variableTemplateItems={variableTemplateItems}
               moveElement={this.moveElement}
               draggingId={draggingId}
               updateDragging={this.updateDragging}
