@@ -1,7 +1,5 @@
 import React, { Component } from 'react';
 import { DragDropContext } from 'react-dnd';
-import HTML5Backend from 'react-dnd-html5-backend';
-// import { default as TouchBackend } from 'react-dnd-touch-backend';
 import _ from 'lodash';
 import $ from 'jquery';
 import * as Typicons from 'react-icons/lib/ti'
@@ -185,7 +183,7 @@ class DragDropFormula extends Component {
     const dragId = dragItem.id;
 
     // cancel if a dragging element is hovering over its own child
-    if (this.getSingleElement(dragId).type === 'bracket' && this.hoverIsChildOfDrag(dragId, hoverId, logicElements)) return;
+    if (this.getElementType(this.getSingleElement(dragId).value) === 'bracket' && this.hoverIsChildOfDrag(dragId, hoverId, logicElements)) return;
 
     const parentAndIndexOfDragging = this.getParentArrayAndIndex(dragId, logicElements);
     // clone the parent array to prevent mutating original object
@@ -266,8 +264,6 @@ class DragDropFormula extends Component {
     let newObjectValue = '';
 
     if (templateItemType === 'basic') {
-      newObjectType = basicTemplateItems[dragIndex].type;
-
       newObjectValue = {
         number: '',
         operator: basicTemplateItems[dragIndex].value,
@@ -275,10 +271,8 @@ class DragDropFormula extends Component {
         bracket: [],
       }[basicTemplateItems[dragIndex].type];
     } else if (templateItemType === 'component') {
-      newObjectType = componentTemplateItems[dragIndex].type;
       newObjectValue = '@' + dragIndex;
     } else if (templateItemType === 'variable') {
-      newObjectType = variableTemplateItems[dragIndex].type;
       newObjectValue = '#' + dragIndex;
     };
 
@@ -434,5 +428,4 @@ class DragDropFormula extends Component {
   }
 }
 
-export default DragDropContext(HTML5Backend)(DragDropFormula);
-// export default DragDropContext(TouchBackend)(DragDropFormula);
+export default DragDropFormula;

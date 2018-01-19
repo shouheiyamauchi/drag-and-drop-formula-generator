@@ -1,5 +1,6 @@
 import React from 'react';
-import DragDropFormula from './containers/DragDropFormula';
+import MonitorContainer from './containers/MonitorContainer';
+import TouchScreenContainer from './containers/TouchScreenContainer';
 
 const values = {
   logicElements: [
@@ -37,7 +38,8 @@ const values = {
 
 const App = props => {
   return (
-    <DragDropFormula values={values} />
+    // <MonitorContainer values={values} />
+    <TouchScreenContainer values={values} />
   )
 }
 
