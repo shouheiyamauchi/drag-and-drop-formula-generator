@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import { DragDropContext } from 'react-dnd';
 import _ from 'lodash';
 import $ from 'jquery';
 import * as Typicons from 'react-icons/lib/ti'
@@ -22,47 +21,36 @@ class DragDropFormula extends Component {
       },
       basicTemplateItems: [
         {
-          type: 'operator',
           value: '+'
         },
         {
-          type: 'operator',
           value: '-'
         },
         {
-          type: 'operator',
           value: '*'
         },
         {
-          type: 'operator',
           value: '/'
         },
         {
-          type: 'comparison',
           value: '<'
         },
         {
-          type: 'comparison',
           value: '>'
         },
         {
-          type: 'comparison',
           value: '<='
         },
         {
-          type: 'comparison',
           value: '>='
         },
         {
-          type: 'comparison',
           value: '='
         },
         {
-          type: 'number',
           value: 'Number'
         },
         {
-          type: 'bracket',
           value: '( )'
         }
       ],
@@ -126,8 +114,10 @@ class DragDropFormula extends Component {
       return 'component'
     } else if (logicElementValue[0] === '#') {
       return 'variable'
-    } else if (['+', '-', '*', '/', '<', '>', '<=', '>=', '='].includes(logicElementValue)) {
+    } else if (['+', '-', '*', '/'].includes(logicElementValue)) {
       return 'operator'
+    } else if (['<', '>', '<=', '>=', '='].includes(logicElementValue)) {
+      return 'comparison'
     } else {
       return 'number'
     };
@@ -258,9 +248,8 @@ class DragDropFormula extends Component {
   }
 
   constructNewObject = (templateItemType, dragIndex) => {
-    const { basicTemplateItems, componentTemplateItems, variableTemplateItems } = this.state;
+    const { basicTemplateItems } = this.state;
 
-    let newObjectType = '';
     let newObjectValue = '';
 
     if (templateItemType === 'basic') {
@@ -269,7 +258,7 @@ class DragDropFormula extends Component {
         operator: basicTemplateItems[dragIndex].value,
         comparison: basicTemplateItems[dragIndex].value,
         bracket: [],
-      }[basicTemplateItems[dragIndex].type];
+      }[this.getElementType(basicTemplateItems[dragIndex].value)];
     } else if (templateItemType === 'component') {
       newObjectValue = '@' + dragIndex;
     } else if (templateItemType === 'variable') {
@@ -277,7 +266,6 @@ class DragDropFormula extends Component {
     };
 
     return {
-      type: newObjectType,
       value: newObjectValue
     };
   }
@@ -365,7 +353,7 @@ class DragDropFormula extends Component {
               index={i}
               key={i}
               newId={newId}
-              type={templateItem.type}
+              type={this.getElementType(templateItem.value)}
               value={templateItem.value}
               templateItemType="basic"
               updateDragging={this.updateDragging}

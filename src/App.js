@@ -39,7 +39,7 @@ const values = {
 const App = props => {
   return (
     <MonitorContainer values={values} />
-    {/* <TouchScreenContainer values={values} /> */}
+    // <TouchScreenContainer values={values} />
   )
 }
 
