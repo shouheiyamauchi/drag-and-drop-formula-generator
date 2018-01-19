@@ -93,11 +93,16 @@ class DragDropFormula extends Component {
     let currentId = startingId;
 
     for (let i = 0; i < logicElementsArray.length; i++) {
+      const logicElementValue = logicElementsArray[i];
+      const logicElementType = this.getElementType(logicElementValue);
+
+      logicElementsArray[i] = {};
       logicElementsArray[i].id = currentId;
-      logicElementsArray[i].type = this.getElementType(logicElementsArray[i].value);
+      logicElementsArray[i].type = logicElementType
+      logicElementsArray[i].value = (logicElementType === 'component' || logicElementType === 'variable') ? logicElementValue.substr(1) : logicElementValue;
       currentId++;
 
-      if (logicElementsArray[i].value.constructor === Array) {
+      if (logicElementType === 'bracket') {
         currentId = this.assignIdAndTypetoLogicElements(logicElementsArray[i].value, currentId).currentId;
       };
     };
@@ -125,6 +130,8 @@ class DragDropFormula extends Component {
       return 'component'
     } else if (logicElementValue[0] === '#') {
       return 'variable'
+    } else if (['+', '-', '*', '/', '<', '>', '<=', '>=', '='].includes(logicElementValue)) {
+      return 'operator'
     } else {
       return 'number'
     };
@@ -271,20 +278,16 @@ class DragDropFormula extends Component {
         bracket: [],
       }[basicTemplateItems[dragIndex].type];
     } else if (templateItemType === 'component') {
-      console.log(dragIndex)
       newObjectType = componentTemplateItems[dragIndex].type;
       newObjectValue = dragIndex;
-      newObjectColor = componentTemplateItems[dragIndex].color;
     } else if (templateItemType === 'variable') {
       newObjectType = variableTemplateItems[dragIndex].type;
       newObjectValue = dragIndex;
-      newObjectColor = variableTemplateItems[dragIndex].color;
     };
 
     return {
       type: newObjectType,
-      value: newObjectValue,
-      color: newObjectColor
+      value: newObjectValue
     };
   }
 
@@ -417,7 +420,6 @@ class DragDropFormula extends Component {
               id={card.id}
               type={card.type}
               value={card.value}
-              color={card.color}
               componentTemplateItems={componentTemplateItems}
               variableTemplateItems={variableTemplateItems}
               moveElement={this.moveElement}

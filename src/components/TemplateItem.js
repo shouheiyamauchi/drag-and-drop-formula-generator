@@ -50,11 +50,7 @@ class TemplateItem extends Component {
 		if (color) style.backgroundColor = color
 
 		return connectDragSource(
-			(type === 'component' || type === 'variable') ? (
-				<div style={{ ...style }}>{value.substr(1)}</div>
-			) : (
-				<div style={{ ...style }}>{renderIcon(value)}</div>
-			)
+			<div style={{ ...style }}>{renderIcon(value)}</div>
 		);
 	}
 }
