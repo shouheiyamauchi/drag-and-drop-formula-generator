@@ -358,6 +358,7 @@ class DragDropFormula extends Component {
               templateItemType="basic"
               updateDragging={this.updateDragging}
               renderIcon={this.renderIcon}
+              canDrag={true}
             />
           ))}
         </div>
@@ -373,6 +374,7 @@ class DragDropFormula extends Component {
               templateItemType="component"
               updateDragging={this.updateDragging}
               renderIcon={this.renderIcon}
+              canDrag={componentTemplateItems[key].canDrag}
             />
           ))}
         </div>
@@ -388,6 +390,7 @@ class DragDropFormula extends Component {
               templateItemType="variable"
               updateDragging={this.updateDragging}
               renderIcon={this.renderIcon}
+              canDrag={true}
             />
           ))}
         </div>

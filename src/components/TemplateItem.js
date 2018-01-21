@@ -14,6 +14,9 @@ const templateItemSource = {
 			templateItemType: props.templateItemType
 		};
 	},
+	canDrag(props) {
+		return props.canDrag;
+	},
 	endDrag(props) {
 		props.updateDragging(null);
 	}
@@ -32,7 +35,8 @@ class TemplateItem extends Component {
 		value: PropTypes.string.isRequired,
 		color: PropTypes.string,
 		templateItemType: PropTypes.string.isRequired,
-		renderIcon: PropTypes.func.isRequired
+		renderIcon: PropTypes.func.isRequired,
+		canDrag: PropTypes.bool.isRequired
 	}
 
 	render() {
@@ -41,13 +45,15 @@ class TemplateItem extends Component {
 			type,
 			value,
 			color,
-			renderIcon
+			renderIcon,
+			canDrag
 		} = this.props
 
 		const style = _.clone(ItemCss.templateItemStyle)
 
 		style.backgroundColor = ItemCss.backgroundColor[type]
 		if (color) style.backgroundColor = color
+		if (!canDrag) { style.opacity = 0.5 ; style.color = 'grey' }
 
 		return connectDragSource(
 			<div style={{ ...style }}>{renderIcon(value)}</div>

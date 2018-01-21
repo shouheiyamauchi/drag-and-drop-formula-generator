@@ -9,15 +9,18 @@ const values = {
   componentTemplateItems: {
     '1': {
       value: 'Component 1',
-      color: 'brown'
+      color: 'brown',
+      canDrag: true
     },
     '2': {
       value: 'Component 2',
-      color: 'orange'
+      color: 'orange',
+      canDrag: false
     },
     '3': {
       value: 'Component 3',
-      color: 'grey'
+      color: 'grey',
+      canDrag: false
     }
   },
   variableTemplateItems: {
