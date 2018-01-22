@@ -108,7 +108,7 @@ class DragDropFormula extends Component {
   }
 
   getElementType = logicElementValue => {
-    if (logicElementValue.constructor === Array) {
+    if (logicElementValue.constructor === Array || logicElementValue === '( )') {
       return 'bracket'
     } else if (logicElementValue[0] === '@') {
       return 'component'
